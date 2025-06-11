@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+<div class="text-center bg-white p-10 rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold text-gray-800">Chào mừng đến với Trang Chủ!</h1>
+    <p class="text-gray-600 mt-4" th:if="${session.loggedInUser != null}">
+        Xin chào, <span class="font-semibold" th:text="${session.loggedInUser.name}">User</span>!
+    </p>
+    <p class="text-gray-600 mt-2">
+        Đây là trang dành cho người dùng thông thường.
+    </p>
+    <a th:href="@{/logout}" class="mt-6 inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+        Đăng xuất
+    </a>
+</div>
+</body>
+</html>

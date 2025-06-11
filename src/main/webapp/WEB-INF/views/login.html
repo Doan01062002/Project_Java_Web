@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .bg-gradient-custom {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-800">
+<div class="flex min-h-screen">
+    <!-- Left side - Image -->
+    <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-teal-500 to-green-500"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-8">
+            <div class="relative w-full max-w-md">
+                <img class="bg-gradient-to-br from-blue-400 to-teal-400 rounded-3xl p-6 shadow-2xl" src="https://res.cloudinary.com/dlz6sulzj/image/upload/v1749627893/image_25_2x_hua1xm.png">
+            </div>
+        </div>
+    </div>
+
+    <!-- Right side - Login form -->
+    <div class="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 bg-slate-800 text-white">
+        <div class="w-full max-w-md">
+            <!-- Header content -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-white mb-4 flex items-center justify-center">
+                    Login
+                    <span class="ml-3 text-3xl">👋</span>
+                </h1>
+                <p class="text-gray-300 text-sm leading-relaxed max-w-sm mx-auto">
+                    Please sign in to access the admin dashboard.
+                </p>
+                <p th:if="${error}" class="text-red-400 text-sm mt-4" th:text="${error}"></p>
+                <p th:if="${param.success}" class="text-green-400 text-sm mt-4" th:text="${param.success}"></p>
+            </div>
+
+            <!-- Login form -->
+            <div class="bg-white rounded-2xl p-8 shadow-xl">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Sign in</h2>
+                </div>
+
+                <form th:action="@{/login}" th:object="${userDTO}" method="post" class="space-y-4">
+                    <!-- Username -->
+                    <div>
+                        <input
+                                type="text"
+                                th:field="*{username}"
+                                placeholder="Username"
+                                class="form-input w-full px-4 py-3 rounded-lg bg-gray-200 text-gray-900 placeholder-gray-500 border-0 focus:bg-gray-100 transition-colors duration-200"
+                        >
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <input
+                                type="password"
+                                th:field="*{password}"
+                                placeholder="Password"
+                                class="form-input w-full px-4 py-3 rounded-lg bg-gray-200 text-gray-900 placeholder-gray-500 border-0 focus:bg-gray-100 transition-colors duration-200"
+                        >
+                    </div>
+
+                    <!-- Register link -->
+                    <div class="text-center text-sm pt-2 pb-4">
+                        <span class="text-gray-600">Don't have an account?</span>
+                        <a th:href="@{/register}" class="text-red-500 hover:text-red-600 transition-colors duration-200 ml-1 font-medium">Register</a>
+                    </div>
+
+                    <!-- Login button -->
+                    <button
+                            type="submit"
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                        Login
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

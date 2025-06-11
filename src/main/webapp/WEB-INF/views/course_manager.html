@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Manager - RKEEdu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar-item:hover {
+            background-color: #f3f4f6;
+        }
+        .course-row:hover {
+            background-color: #f9fafb;
+        }
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+<!-- Header -->
+<header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+    <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <div class="text-2xl font-bold">
+                <span class="text-red-500">Rice</span><span class="text-blue-600">Edu</span>
+                <span class="text-red-400 text-xs">®</span>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-md mx-8">
+            <div class="relative">
+                <input type="text" placeholder="Type to search"
+                       class="w-full px-4 py-2 pl-10 pr-4 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Icons -->
+        <div class="flex items-center space-x-3">
+            <div class="relative">
+                <i class="fas fa-bell text-gray-600 text-lg cursor-pointer"></i>
+                <span class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+            </div>
+            <div class="flex items-center space-x-2 cursor-pointer">
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face"
+                     alt="User" class="w-8 h-8 rounded-full">
+                <span class="text-sm font-medium text-gray-700">Logout</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-sm h-screen">
+        <nav class="mt-6">
+            <div class="space-y-1">
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
+                    <i class="fas fa-tachometer-alt mr-3 text-gray-500"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
+                    <i class="fas fa-users mr-3 text-gray-500"></i>
+                    <span>Students</span>
+                </a>
+
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 bg-blue-50 border-r-3 border-blue-500 font-medium text-blue-700">
+                    <i class="fas fa-book mr-3 text-blue-500"></i>
+                    <span>Courses</span>
+                </a>
+
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
+                    <i class="fas fa-user-plus mr-3 text-gray-500"></i>
+                    <span>Enrollment</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">Course Manager</h1>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                Add new course
+            </button>
+        </div>
+
+        <!-- Search and Sort Bar -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Sort By ID</option>
+                        <option>Sort By Name</option>
+                        <option>Sort By Date</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <input type="text" placeholder="search course by name"
+                           class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Table -->
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b">
+                <tr>
+                    <th class="text-left py-3 px-6 font-medium text-gray-700">Course ID</th>
+                    <th class="text-left py-3 px-6 font-medium text-gray-700">Course Name</th>
+                    <th class="text-left py-3 px-6 font-medium text-gray-700">Duration (Hours)</th>
+                    <th class="text-left py-3 px-6 font-medium text-gray-700">Instructor</th>
+                    <th class="text-left py-3 px-6 font-medium text-gray-700">Image</th>
+                    <th class="text-left py-3 px-6 font-medium text-gray-700">Created Date</th>
+                    <th class="text-left py-3 px-6 font-medium text-gray-700">Action</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                <!-- Course Row 1 -->
+                <tr class="course-row transition-colors">
+                    <td class="py-4 px-6 text-gray-900 font-medium">C0001</td>
+                    <td class="py-4 px-6 text-gray-900">Basic Web Programming</td>
+                    <td class="py-4 px-6 text-gray-600">220</td>
+                    <td class="py-4 px-6 text-gray-600">John Smith</td>
+                    <td class="py-4 px-6">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=40&h=40&fit=crop"
+                             alt="Course" class="w-10 h-10 rounded object-cover">
+                    </td>
+                    <td class="py-4 px-6 text-gray-600">16/09/2025</td>
+                    <td class="py-4 px-6">
+                        <div class="flex space-x-2">
+                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Course Row 2 -->
+                <tr class="course-row transition-colors">
+                    <td class="py-4 px-6 text-gray-900 font-medium">C0002</td>
+                    <td class="py-4 px-6 text-gray-900">Frontend Programming with React</td>
+                    <td class="py-4 px-6 text-gray-600">250</td>
+                    <td class="py-4 px-6 text-gray-600">Emily Johnson</td>
+                    <td class="py-4 px-6">
+                        <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=40&h=40&fit=crop"
+                             alt="Course" class="w-10 h-10 rounded object-cover">
+                    </td>
+                    <td class="py-4 px-6 text-gray-600">17/05/2025</td>
+                    <td class="py-4 px-6">
+                        <div class="flex space-x-2">
+                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Course Row 3 -->
+                <tr class="course-row transition-colors">
+                    <td class="py-4 px-6 text-gray-900 font-medium">C0003</td>
+                    <td class="py-4 px-6 text-gray-900">Backend Programming with Node.js</td>
+                    <td class="py-4 px-6 text-gray-600">195</td>
+                    <td class="py-4 px-6 text-gray-600">Michael Brown</td>
+                    <td class="py-4 px-6">
+                        <img src="https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=40&h=40&fit=crop"
+                             alt="Course" class="w-10 h-10 rounded object-cover">
+                    </td>
+                    <td class="py-4 px-6 text-gray-600">10/05/2025</td>
+                    <td class="py-4 px-6">
+                        <div class="flex space-x-2">
+                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Course Row 4 -->
+                <tr class="course-row transition-colors">
+                    <td class="py-4 px-6 text-gray-900 font-medium">C0004</td>
+                    <td class="py-4 px-6 text-gray-900">Python Programming for Beginners</td>
+                    <td class="py-4 px-6 text-gray-600">200</td>
+                    <td class="py-4 px-6 text-gray-600">Sarah Davis</td>
+                    <td class="py-4 px-6">
+                        <img src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=40&h=40&fit=crop"
+                             alt="Course" class="w-10 h-10 rounded object-cover">
+                    </td>
+                    <td class="py-4 px-6 text-gray-600">25/09/2025</td>
+                    <td class="py-4 px-6">
+                        <div class="flex space-x-2">
+                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Course Row 5 -->
+                <tr class="course-row transition-colors">
+                    <td class="py-4 px-6 text-gray-900 font-medium">C0005</td>
+                    <td class="py-4 px-6 text-gray-900">Mobile Programming with Flutter</td>
+                    <td class="py-4 px-6 text-gray-600">255</td>
+                    <td class="py-4 px-6 text-gray-600">David Wilson</td>
+                    <td class="py-4 px-6">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=40&h=40&fit=crop"
+                             alt="Course" class="w-10 h-10 rounded object-cover">
+                    </td>
+                    <td class="py-4 px-6 text-gray-600">28/05/2025</td>
+                    <td class="py-4 px-6">
+                        <div class="flex space-x-2">
+                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Course Row 6 -->
+                <tr class="course-row transition-colors">
+                    <td class="py-4 px-6 text-gray-900 font-medium">C0006</td>
+                    <td class="py-4 px-6 text-gray-900">Data Science with Python</td>
+                    <td class="py-4 px-6 text-gray-600">245</td>
+                    <td class="py-4 px-6 text-gray-600">Laura Miller</td>
+                    <td class="py-4 px-6">
+                        <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=40&h=40&fit=crop"
+                             alt="Course" class="w-10 h-10 rounded object-cover">
+                    </td>
+                    <td class="py-4 px-6 text-gray-600">01/06/2025</td>
+                    <td class="py-4 px-6">
+                        <div class="flex space-x-2">
+                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Course Row 7 -->
+                <tr class="course-row transition-colors">
+                    <td class="py-4 px-6 text-gray-900 font-medium">C0007</td>
+                    <td class="py-4 px-6 text-gray-900">Programming with Java</td>
+                    <td class="py-4 px-6 text-gray-600">215</td>
+                    <td class="py-4 px-6 text-gray-600">James Taylor</td>
+                    <td class="py-4 px-6">
+                        <img src="https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=40&h=40&fit=crop"
+                             alt="Course" class="w-10 h-10 rounded object-cover">
+                    </td>
+                    <td class="py-4 px-6 text-gray-600">02/06/2025</td>
+                    <td class="py-4 px-6">
+                        <div class="flex space-x-2">
+                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Course Row 8 -->
+                <tr class="course-row transition-colors">
+                    <td class="py-4 px-6 text-gray-900 font-medium">C0008</td>
+                    <td class="py-4 px-6 text-gray-900">DevOps and CI/CD</td>
+                    <td class="py-4 px-6 text-gray-600">240</td>
+                    <td class="py-4 px-6 text-gray-600">Rebecca Anderson</td>
+                    <td class="py-4 px-6">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=40&h=40&fit=crop"
+                             alt="Course" class="w-10 h-10 rounded object-cover">
+                    </td>
+                    <td class="py-4 px-6 text-gray-600">04/06/2025</td>
+                    <td class="py-4 px-6">
+                        <div class="flex space-x-2">
+                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-center mt-6 space-x-2">
+            <button class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">1</button>
+            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">2</button>
+            <button class="px-3 py-2 bg-blue-500 text-white rounded">3</button>
+            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">4</button>
+            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">5</button>
+            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">6</button>
+            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">7</button>
+            <span class="px-3 py-2 text-gray-500">...</span>
+            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">20</button>
+
+            <button class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Add some basic JavaScript for interactivity
+    document.addEventListener('DOMContentLoaded', function() {
+        // Search functionality
+        const searchBtn = document.querySelector('button:contains("Search")');
+        const searchInput = document.querySelector('input[placeholder="search course by name"]');
+
+        // Add click handlers for action buttons
+        const deleteButtons = document.querySelectorAll('.fa-trash');
+        const editButtons = document.querySelectorAll('.fa-edit');
+
+        deleteButtons.forEach(btn => {
+            btn.parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                if(confirm('Are you sure you want to delete this course?')) {
+                    // Add delete logic here
+                    console.log('Delete course');
+                }
+            });
+        });
+
+        editButtons.forEach(btn => {
+            btn.parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Add edit logic here
+                console.log('Edit course');
+            });
+        });
+    });
+</script>
+</body>
+</html>
