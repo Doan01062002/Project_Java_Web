@@ -16,6 +16,35 @@
         .action-btn:hover {
             transform: scale(1.05);
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -25,8 +54,7 @@
         <!-- Logo -->
         <div class="flex items-center">
             <div class="text-2xl font-bold">
-                <span class="text-red-500">Rice</span><span class="text-blue-600">Edu</span>
-                <span class="text-red-400 text-xs">®</span>
+                <img class="h-8 inline-block" src="https://res.cloudinary.com/dlz6sulzj/image/upload/v1749632988/819bc04f5546ebd7a87a7a8ebe401a97208935eb_wjwly8.png">
             </div>
         </div>
 
@@ -45,6 +73,10 @@
 
         <!-- Right Icons -->
         <div class="flex items-center space-x-3">
+            <div class="relative">
+                <i class="fa-solid fa-envelope text-gray-600 text-lg cursor-pointer"></i>
+                <span class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+            </div>
             <div class="relative">
                 <i class="fas fa-bell text-gray-600 text-lg cursor-pointer"></i>
                 <span class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
@@ -91,7 +123,7 @@
         <!-- Page Header -->
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-gray-900">Course Manager</h1>
-            <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+            <button id="addCourseBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                 Add new course
             </button>
         </div>
@@ -342,14 +374,165 @@
     </main>
 </div>
 
-<script>
-    // Add some basic JavaScript for interactivity
-    document.addEventListener('DOMContentLoaded', function() {
-        // Search functionality
-        const searchBtn = document.querySelector('button:contains("Search")');
-        const searchInput = document.querySelector('input[placeholder="search course by name"]');
+<!-- Add Course Modal -->
+<div id="addCourseModal" class="modal">
+    <div class="modal-content fade-in">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">Add new course</h2>
+            <button id="closeModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
 
-        // Add click handlers for action buttons
+        <!-- Modal Body -->
+        <form id="addCourseForm" class="p-6 space-y-4">
+            <!-- Course Name -->
+            <div>
+                <label for="courseName" class="block text-sm font-medium text-gray-700 mb-2">Course Name</label>
+                <input type="text" id="courseName" name="courseName"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                       placeholder="Enter course name" required>
+            </div>
+
+            <!-- Duration -->
+            <div>
+                <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <input type="number" id="duration" name="duration"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                       placeholder="Duration in hours" required>
+            </div>
+
+            <!-- Instructor -->
+            <div>
+                <label for="instructor" class="block text-sm font-medium text-gray-700 mb-2">Instructor</label>
+                <input type="text" id="instructor" name="instructor"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                       placeholder="Enter instructor name" required>
+            </div>
+
+            <!-- Image Upload -->
+            <div>
+                <label for="courseImage" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                <div class="flex items-center space-x-4">
+                    <button type="button" id="chooseFileBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                        Choose file
+                    </button>
+                    <span id="fileName" class="text-sm text-gray-500">No file choose</span>
+                    <input type="file" id="courseImage" name="courseImage" accept="image/*" class="hidden">
+                </div>
+            </div>
+        </form>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+            <button id="cancelBtn" type="button" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                Cancel
+            </button>
+            <button id="addBtn" type="submit" form="addCourseForm" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                Add
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Modal elements
+        const modal = document.getElementById('addCourseModal');
+        const addCourseBtn = document.getElementById('addCourseBtn');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const addBtn = document.getElementById('addBtn');
+        const addCourseForm = document.getElementById('addCourseForm');
+
+        // File upload elements
+        const chooseFileBtn = document.getElementById('chooseFileBtn');
+        const courseImage = document.getElementById('courseImage');
+        const fileName = document.getElementById('fileName');
+
+        // Open modal
+        addCourseBtn.addEventListener('click', function() {
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+
+        // Close modal functions
+        function closeModalFunc() {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto'; // Restore scrolling
+            addCourseForm.reset(); // Reset form
+            fileName.textContent = 'No file choose'; // Reset file name
+        }
+
+        closeModal.addEventListener('click', closeModalFunc);
+        cancelBtn.addEventListener('click', closeModalFunc);
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModalFunc();
+            }
+        });
+
+        // File upload functionality
+        chooseFileBtn.addEventListener('click', function() {
+            courseImage.click();
+        });
+
+        courseImage.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                fileName.textContent = this.files[0].name;
+            } else {
+                fileName.textContent = 'No file choose';
+            }
+        });
+
+        // Form submission
+        addCourseForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(this);
+            const courseData = {
+                courseName: formData.get('courseName'),
+                duration: formData.get('duration'),
+                instructor: formData.get('instructor'),
+                courseImage: formData.get('courseImage')
+            };
+
+            // Here you would typically send the data to your Java backend
+            console.log('Course data to be sent:', courseData);
+
+            // For demonstration, show success message
+            alert('Course added successfully!');
+            closeModalFunc();
+
+            // In a real application, you would make an AJAX call to your Java servlet
+            // Example:
+            /*
+            fetch('/your-servlet-endpoint', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Course added successfully!');
+                    closeModalFunc();
+                    // Refresh the course table or add the new row dynamically
+                } else {
+                    alert('Error adding course: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while adding the course.');
+            });
+            */
+        });
+
+        // Existing functionality for action buttons
         const deleteButtons = document.querySelectorAll('.fa-trash');
         const editButtons = document.querySelectorAll('.fa-edit');
 
@@ -357,7 +540,6 @@
             btn.parentElement.addEventListener('click', function(e) {
                 e.preventDefault();
                 if(confirm('Are you sure you want to delete this course?')) {
-                    // Add delete logic here
                     console.log('Delete course');
                 }
             });
@@ -366,9 +548,15 @@
         editButtons.forEach(btn => {
             btn.parentElement.addEventListener('click', function(e) {
                 e.preventDefault();
-                // Add edit logic here
                 console.log('Edit course');
             });
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                closeModalFunc();
+            }
         });
     });
 </script>
