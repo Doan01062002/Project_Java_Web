@@ -1,4 +1,4 @@
-package com.example.project_java_web.config;
+package ra.edu.config;
 
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;

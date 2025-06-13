@@ -1,0 +1,114 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Edit Course Modal</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <style>
+            .modal {
+                display: flex; /* Hiển thị sẵn modal để test */
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                align-items: center;
+                justify-content: center;
+            }
+
+            .modal-content {
+                background-color: white;
+                border-radius: 8px;
+                width: 500px;
+                max-width: 90%;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                animation: fadeIn 0.2s ease-in-out;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: scale(0.95); }
+                to { opacity: 1; transform: scale(1); }
+            }
+        </style>
+    </head>
+    <body>
+
+    <!-- Modal hiển thị sẵn để test -->
+    <div id="addCourseModal" class="modal">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-900">Edit course</h2>
+            </div>
+
+            <!-- Modal Body -->
+            <form th:action="@{/course_manager/save_edit_course}" th:object="${courseDTO}" method="post" enctype="multipart/form-data" class="p-6 space-y-4">
+
+                <!-- ID -->
+                <input type="hidden" th:field="*{id}"/>
+
+                <!-- Giữ lại ảnh cũ nếu không upload mới -->
+                <input type="hidden" th:field="*{image}" />
+
+
+                <!-- Course Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Course Name</label>
+                    <input type="text" id="name" th:field="*{name}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="Enter course name" >
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error" style="color:red;"></div>
+
+                </div>
+
+                <!-- Duration -->
+                <div>
+                    <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                    <input type="number" id="duration" th:field="*{duration}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="Duration in hours" >
+                    <div th:if="${#fields.hasErrors('duration')}" th:errors="*{duration}" class="error" style="color:red;"></div>
+
+                </div>
+
+                <!-- Instructor -->
+                <div>
+                    <label for="instructor" class="block text-sm font-medium text-gray-700 mb-2">Instructor</label>
+                    <input type="text" id="instructor" th:field="*{instructor}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="Enter instructor name" >
+                    <div th:if="${#fields.hasErrors('instructor')}" th:errors="*{instructor}" class="error" style="color:red;"></div>
+
+                </div>
+
+                <!-- Image Upload -->
+                <div>
+                    <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                    <div class="flex items-center space-x-4">
+                        <input type="file" id="imageFile"  th:field="*{imageFile}">
+                        <div th:if="${courseDTO.image}">
+                            <br>
+                            <p>Ảnh hiện tại:</p>
+                            <img th:src="${courseDTO.image}" alt="Ảnh hiện tại" style="max-height: 200px; margin-top: 10px;">
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+                    <a th:href="@{/course_manager/cancel_form}" type="button" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                        Cancel
+                    </a>
+                    <button type="submit"  class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </body>
+    </html>

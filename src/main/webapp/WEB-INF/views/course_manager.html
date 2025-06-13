@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Manager - RKEEdu</title>
+    <title>Course Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -16,35 +16,7 @@
         .action-btn:hover {
             transform: scale(1.05);
         }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background-color: white;
-            border-radius: 8px;
-            width: 500px;
-            max-width: 90%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .fade-in {
-            animation: fadeIn 0.2s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
+
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -84,7 +56,7 @@
             <div class="flex items-center space-x-2 cursor-pointer">
                 <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face"
                      alt="User" class="w-8 h-8 rounded-full">
-                <span class="text-sm font-medium text-gray-700">Logout</span>
+                <a th:href="@{/logout}" class="text-sm font-medium text-gray-700">Logout</a>
             </div>
         </div>
     </div>
@@ -105,7 +77,7 @@
                     <span>Students</span>
                 </a>
 
-                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 bg-blue-50 border-r-3 border-blue-500 font-medium text-blue-700">
+                <a th:href="@{/course_manager/show}" class="sidebar-item flex items-center px-6 py-3 text-gray-700 bg-blue-50 border-r-3 border-blue-500 font-medium text-blue-700">
                     <i class="fas fa-book mr-3 text-blue-500"></i>
                     <span>Courses</span>
                 </a>
@@ -123,9 +95,9 @@
         <!-- Page Header -->
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-gray-900">Course Manager</h1>
-            <button id="addCourseBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+            <a th:href="@{/course_manager/add}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                 Add new course
-            </button>
+            </a>
         </div>
 
         <!-- Search and Sort Bar -->
@@ -164,186 +136,26 @@
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                <!-- Course Row 1 -->
-                <tr class="course-row transition-colors">
-                    <td class="py-4 px-6 text-gray-900 font-medium">C0001</td>
-                    <td class="py-4 px-6 text-gray-900">Basic Web Programming</td>
-                    <td class="py-4 px-6 text-gray-600">220</td>
-                    <td class="py-4 px-6 text-gray-600">John Smith</td>
+                <tr class="course-row transition-colors" th:each="course : ${listCourse}">
+                    <td class="py-4 px-6 text-gray-900 font-medium" th:text="${course.id}"></td>
+                    <td class="py-4 px-6 text-gray-900" th:text="${course.name}" ></td>
+                    <td class="py-4 px-6 text-gray-600" th:text="${course.duration}"></td>
+                    <td class="py-4 px-6 text-gray-600" th:text="${course.instructor}"></td>
                     <td class="py-4 px-6">
-                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=40&h=40&fit=crop"
+                        <img th:src="${course.image}"
                              alt="Course" class="w-10 h-10 rounded object-cover">
                     </td>
-                    <td class="py-4 px-6 text-gray-600">16/09/2025</td>
+                    <td class="py-4 px-6 text-gray-600" th:text="${course.createAt}">16/09/2025</td>
                     <td class="py-4 px-6">
                         <div class="flex space-x-2">
-                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
+                            <a th:href="@{/course_manager/delete_course/{id}(id=${course.id})}"
+                               onclick="return confirm('Bạn có chắc chắn muốn xoá khoá học này ?')"
+                               class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
                                 <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
+                            </a>
+                            <a th:href="@{/course_manager/edit/{id}(id=${course.id})}" class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
                                 <i class="fas fa-edit"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Course Row 2 -->
-                <tr class="course-row transition-colors">
-                    <td class="py-4 px-6 text-gray-900 font-medium">C0002</td>
-                    <td class="py-4 px-6 text-gray-900">Frontend Programming with React</td>
-                    <td class="py-4 px-6 text-gray-600">250</td>
-                    <td class="py-4 px-6 text-gray-600">Emily Johnson</td>
-                    <td class="py-4 px-6">
-                        <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=40&h=40&fit=crop"
-                             alt="Course" class="w-10 h-10 rounded object-cover">
-                    </td>
-                    <td class="py-4 px-6 text-gray-600">17/05/2025</td>
-                    <td class="py-4 px-6">
-                        <div class="flex space-x-2">
-                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Course Row 3 -->
-                <tr class="course-row transition-colors">
-                    <td class="py-4 px-6 text-gray-900 font-medium">C0003</td>
-                    <td class="py-4 px-6 text-gray-900">Backend Programming with Node.js</td>
-                    <td class="py-4 px-6 text-gray-600">195</td>
-                    <td class="py-4 px-6 text-gray-600">Michael Brown</td>
-                    <td class="py-4 px-6">
-                        <img src="https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=40&h=40&fit=crop"
-                             alt="Course" class="w-10 h-10 rounded object-cover">
-                    </td>
-                    <td class="py-4 px-6 text-gray-600">10/05/2025</td>
-                    <td class="py-4 px-6">
-                        <div class="flex space-x-2">
-                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Course Row 4 -->
-                <tr class="course-row transition-colors">
-                    <td class="py-4 px-6 text-gray-900 font-medium">C0004</td>
-                    <td class="py-4 px-6 text-gray-900">Python Programming for Beginners</td>
-                    <td class="py-4 px-6 text-gray-600">200</td>
-                    <td class="py-4 px-6 text-gray-600">Sarah Davis</td>
-                    <td class="py-4 px-6">
-                        <img src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=40&h=40&fit=crop"
-                             alt="Course" class="w-10 h-10 rounded object-cover">
-                    </td>
-                    <td class="py-4 px-6 text-gray-600">25/09/2025</td>
-                    <td class="py-4 px-6">
-                        <div class="flex space-x-2">
-                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Course Row 5 -->
-                <tr class="course-row transition-colors">
-                    <td class="py-4 px-6 text-gray-900 font-medium">C0005</td>
-                    <td class="py-4 px-6 text-gray-900">Mobile Programming with Flutter</td>
-                    <td class="py-4 px-6 text-gray-600">255</td>
-                    <td class="py-4 px-6 text-gray-600">David Wilson</td>
-                    <td class="py-4 px-6">
-                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=40&h=40&fit=crop"
-                             alt="Course" class="w-10 h-10 rounded object-cover">
-                    </td>
-                    <td class="py-4 px-6 text-gray-600">28/05/2025</td>
-                    <td class="py-4 px-6">
-                        <div class="flex space-x-2">
-                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Course Row 6 -->
-                <tr class="course-row transition-colors">
-                    <td class="py-4 px-6 text-gray-900 font-medium">C0006</td>
-                    <td class="py-4 px-6 text-gray-900">Data Science with Python</td>
-                    <td class="py-4 px-6 text-gray-600">245</td>
-                    <td class="py-4 px-6 text-gray-600">Laura Miller</td>
-                    <td class="py-4 px-6">
-                        <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=40&h=40&fit=crop"
-                             alt="Course" class="w-10 h-10 rounded object-cover">
-                    </td>
-                    <td class="py-4 px-6 text-gray-600">01/06/2025</td>
-                    <td class="py-4 px-6">
-                        <div class="flex space-x-2">
-                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Course Row 7 -->
-                <tr class="course-row transition-colors">
-                    <td class="py-4 px-6 text-gray-900 font-medium">C0007</td>
-                    <td class="py-4 px-6 text-gray-900">Programming with Java</td>
-                    <td class="py-4 px-6 text-gray-600">215</td>
-                    <td class="py-4 px-6 text-gray-600">James Taylor</td>
-                    <td class="py-4 px-6">
-                        <img src="https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=40&h=40&fit=crop"
-                             alt="Course" class="w-10 h-10 rounded object-cover">
-                    </td>
-                    <td class="py-4 px-6 text-gray-600">02/06/2025</td>
-                    <td class="py-4 px-6">
-                        <div class="flex space-x-2">
-                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Course Row 8 -->
-                <tr class="course-row transition-colors">
-                    <td class="py-4 px-6 text-gray-900 font-medium">C0008</td>
-                    <td class="py-4 px-6 text-gray-900">DevOps and CI/CD</td>
-                    <td class="py-4 px-6 text-gray-600">240</td>
-                    <td class="py-4 px-6 text-gray-600">Rebecca Anderson</td>
-                    <td class="py-4 px-6">
-                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=40&h=40&fit=crop"
-                             alt="Course" class="w-10 h-10 rounded object-cover">
-                    </td>
-                    <td class="py-4 px-6 text-gray-600">04/06/2025</td>
-                    <td class="py-4 px-6">
-                        <div class="flex space-x-2">
-                            <button class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
-                                <i class="fas fa-edit"></i>
-                            </button>
+                            </a>
                         </div>
                     </td>
                 </tr>
@@ -353,212 +165,35 @@
 
         <!-- Pagination -->
         <div class="flex items-center justify-center mt-6 space-x-2">
-            <button class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors">
+            <a th:if="${currentPage > 1}"
+               th:href="@{|?page=${currentPage - 1}|}"
+               class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors">
                 <i class="fas fa-chevron-left"></i>
-            </button>
+            </a>
 
-            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">1</button>
-            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">2</button>
-            <button class="px-3 py-2 bg-blue-500 text-white rounded">3</button>
-            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">4</button>
-            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">5</button>
-            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">6</button>
-            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">7</button>
-            <span class="px-3 py-2 text-gray-500">...</span>
-            <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">20</button>
+            <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+        <span th:if="${i == currentPage}"
+              th:text="${i}"
+              class="px-3 py-2 bg-blue-500 text-white rounded"></span>
 
-            <button class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors">
+                <a th:if="${i != currentPage}"
+                   th:href="@{|?page=${i}|}"
+                   th:text="${i}"
+                   class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors"></a>
+            </th:block>
+
+            <a th:if="${currentPage < totalPages}"
+               th:href="@{|?page=${currentPage + 1}|}"
+               class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors">
                 <i class="fas fa-chevron-right"></i>
-            </button>
+            </a>
         </div>
+
     </main>
 </div>
 
+<!--<div th:insert="course_manager_modal::MODAL_ADD_COURSE"></div>-->
 <!-- Add Course Modal -->
-<div id="addCourseModal" class="modal">
-    <div class="modal-content fade-in">
-        <!-- Modal Header -->
-        <div class="flex items-center justify-between p-6 border-b border-gray-200">
-            <h2 class="text-xl font-semibold text-gray-900">Add new course</h2>
-            <button id="closeModal" class="text-gray-400 hover:text-gray-600 transition-colors">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
 
-        <!-- Modal Body -->
-        <form id="addCourseForm" class="p-6 space-y-4">
-            <!-- Course Name -->
-            <div>
-                <label for="courseName" class="block text-sm font-medium text-gray-700 mb-2">Course Name</label>
-                <input type="text" id="courseName" name="courseName"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                       placeholder="Enter course name" required>
-            </div>
-
-            <!-- Duration -->
-            <div>
-                <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
-                <input type="number" id="duration" name="duration"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                       placeholder="Duration in hours" required>
-            </div>
-
-            <!-- Instructor -->
-            <div>
-                <label for="instructor" class="block text-sm font-medium text-gray-700 mb-2">Instructor</label>
-                <input type="text" id="instructor" name="instructor"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                       placeholder="Enter instructor name" required>
-            </div>
-
-            <!-- Image Upload -->
-            <div>
-                <label for="courseImage" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
-                <div class="flex items-center space-x-4">
-                    <button type="button" id="chooseFileBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                        Choose file
-                    </button>
-                    <span id="fileName" class="text-sm text-gray-500">No file choose</span>
-                    <input type="file" id="courseImage" name="courseImage" accept="image/*" class="hidden">
-                </div>
-            </div>
-        </form>
-
-        <!-- Modal Footer -->
-        <div class="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
-            <button id="cancelBtn" type="button" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
-                Cancel
-            </button>
-            <button id="addBtn" type="submit" form="addCourseForm" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                Add
-            </button>
-        </div>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Modal elements
-        const modal = document.getElementById('addCourseModal');
-        const addCourseBtn = document.getElementById('addCourseBtn');
-        const closeModal = document.getElementById('closeModal');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const addBtn = document.getElementById('addBtn');
-        const addCourseForm = document.getElementById('addCourseForm');
-
-        // File upload elements
-        const chooseFileBtn = document.getElementById('chooseFileBtn');
-        const courseImage = document.getElementById('courseImage');
-        const fileName = document.getElementById('fileName');
-
-        // Open modal
-        addCourseBtn.addEventListener('click', function() {
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-        });
-
-        // Close modal functions
-        function closeModalFunc() {
-            modal.classList.remove('show');
-            document.body.style.overflow = 'auto'; // Restore scrolling
-            addCourseForm.reset(); // Reset form
-            fileName.textContent = 'No file choose'; // Reset file name
-        }
-
-        closeModal.addEventListener('click', closeModalFunc);
-        cancelBtn.addEventListener('click', closeModalFunc);
-
-        // Close modal when clicking outside
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModalFunc();
-            }
-        });
-
-        // File upload functionality
-        chooseFileBtn.addEventListener('click', function() {
-            courseImage.click();
-        });
-
-        courseImage.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                fileName.textContent = this.files[0].name;
-            } else {
-                fileName.textContent = 'No file choose';
-            }
-        });
-
-        // Form submission
-        addCourseForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Get form data
-            const formData = new FormData(this);
-            const courseData = {
-                courseName: formData.get('courseName'),
-                duration: formData.get('duration'),
-                instructor: formData.get('instructor'),
-                courseImage: formData.get('courseImage')
-            };
-
-            // Here you would typically send the data to your Java backend
-            console.log('Course data to be sent:', courseData);
-
-            // For demonstration, show success message
-            alert('Course added successfully!');
-            closeModalFunc();
-
-            // In a real application, you would make an AJAX call to your Java servlet
-            // Example:
-            /*
-            fetch('/your-servlet-endpoint', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Course added successfully!');
-                    closeModalFunc();
-                    // Refresh the course table or add the new row dynamically
-                } else {
-                    alert('Error adding course: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while adding the course.');
-            });
-            */
-        });
-
-        // Existing functionality for action buttons
-        const deleteButtons = document.querySelectorAll('.fa-trash');
-        const editButtons = document.querySelectorAll('.fa-edit');
-
-        deleteButtons.forEach(btn => {
-            btn.parentElement.addEventListener('click', function(e) {
-                e.preventDefault();
-                if(confirm('Are you sure you want to delete this course?')) {
-                    console.log('Delete course');
-                }
-            });
-        });
-
-        editButtons.forEach(btn => {
-            btn.parentElement.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Edit course');
-            });
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && modal.classList.contains('show')) {
-                closeModalFunc();
-            }
-        });
-    });
-</script>
 </body>
 </html>
