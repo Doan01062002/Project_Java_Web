@@ -36,10 +36,11 @@ public class CourseManagerController {
 
     @GetMapping("/show")
     public String showCourseManager(@RequestParam(name = "page", defaultValue = "1") int page,
+                                    @RequestParam(name = "add", required = false) String add,
+                                    @RequestParam(name = "edit", required = false) Integer editId,
                                     HttpSession session,
                                     Model model) {
         StudentDTO loggedInUser = (StudentDTO) session.getAttribute("loggedInUser");
-
         if (loggedInUser == null || !Boolean.TRUE.equals(loggedInUser.getRole())) {
             return "redirect:/login_form";
         }
@@ -52,35 +53,48 @@ public class CourseManagerController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("listCourse", courseService.findAllByPage(page, pageSize));
 
+        if (add != null) {
+            model.addAttribute("showAddModal", true);
+            model.addAttribute("courseDTO", new CourseDTO());
+        }
+        if (editId != null) {
+            Course course = courseService.getCourseById(editId);
+            CourseDTO courseDTO = new CourseDTO();
+            courseDTO.setId(course.getId());
+            courseDTO.setName(course.getName());
+            courseDTO.setDuration(course.getDuration());
+            courseDTO.setInstructor(course.getInstructor());
+            courseDTO.setCreateAt(course.getCreateAt());
+            courseDTO.setImage(course.getImage());
+            model.addAttribute("showEditModal", true);
+            model.addAttribute("courseDTO", courseDTO);
+        }
 
         return "course_manager";
-    }
-
-    @GetMapping("/add")
-    public String showFormAddCourse(Model model) {
-        CourseDTO courseDTO = new CourseDTO();
-        model.addAttribute("courseDTO", courseDTO);
-        return "form_add_course";
-    }
-
-    @GetMapping("/cancel_form")
-    public String cancelFormAddCourse(Model model) {
-        return "redirect:/course_manager/show";
     }
 
     @PostMapping("/save")
     public String saveAddCourse(@Valid @ModelAttribute("courseDTO") CourseDTO courseDTO,
                                 BindingResult bindingResult,
+                                @RequestParam(name = "page", defaultValue = "1") int page,
                                 Model model) {
-        // ❗ Kiểm tra lỗi nhập liệu
         if (bindingResult.hasErrors()) {
-            return "form_add_course";
+            // Bổ sung lại dữ liệu phân trang cho trang course_manager
+            int pageSize = 5;
+            long totalCourses = courseService.countTotalCourses();
+            int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("listCourse", courseService.findAllByPage(page, pageSize));
+            model.addAttribute("showAddModal", true);
+            return "course_manager";
         }
 
-        // ✅ Kiểm tra trùng tên
         if (courseService.isCourseNameDuplicate(courseDTO.getName())) {
             bindingResult.rejectValue("name", "error.courseDTO", "Tên khoá học đã tồn tại");
-            return "form_add_course";
+            model.addAttribute("showAddModal", true);
+            return "course_manager";
         }
 
         MultipartFile fileImage = courseDTO.getImageFile();
@@ -93,40 +107,35 @@ public class CourseManagerController {
             courseService.addOrUpdateCourse(courseDTO);
         } catch (IOException exception) {
             model.addAttribute("error", "Lỗi upload ảnh: " + exception.getMessage());
-            return "form_add_course";
+            model.addAttribute("showAddModal", true);
+            return "course_manager";
         }
 
         return "redirect:/course_manager/show";
-    }
-
-
-    @GetMapping("/edit/{id}")
-    public String showFormEditCourse(Model model, @PathVariable("id") int id) {
-        Course course = courseService.getCourseById(id);
-        CourseDTO courseDTO = new CourseDTO();
-        courseDTO.setId(course.getId());
-        courseDTO.setName(course.getName());
-        courseDTO.setDuration(course.getDuration());
-        courseDTO.setInstructor(course.getInstructor());
-        courseDTO.setCreateAt(courseDTO.getCreateAt());
-        courseDTO.setImage(course.getImage());
-
-        model.addAttribute("courseDTO", courseDTO);
-        return "form_edit_course";
     }
 
     @PostMapping("/save_edit_course")
     public String saveEditCourse(@Valid @ModelAttribute("courseDTO") CourseDTO courseDTO,
                                  BindingResult bindingResult,
+                                 @RequestParam(name = "page", defaultValue = "1") int page,
                                  Model model) {
         if (bindingResult.hasErrors()) {
-            return "form_edit_course";
+            int pageSize = 5;
+            long totalCourses = courseService.countTotalCourses();
+            int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("listCourse", courseService.findAllByPage(page, pageSize));
+            model.addAttribute("showEditModal", true);
+            return "course_manager";
         }
 
-        // ✅ Kiểm tra trùng tên với khoá học khác
+        // Kiểm tra trùng tên với khoá học khác
         if (courseService.isCourseNameDuplicate(courseDTO.getName(), courseDTO.getId())) {
             bindingResult.rejectValue("name", "error.courseDTO", "Tên khoá học đã tồn tại");
-            return "form_edit_course";
+            model.addAttribute("showEditModal", true);
+            return "course_manager";
         }
 
         MultipartFile fileImage = courseDTO.getImageFile();
@@ -139,13 +148,12 @@ public class CourseManagerController {
             courseService.addOrUpdateCourse(courseDTO);
         } catch (IOException exception) {
             model.addAttribute("error", "Lỗi upload ảnh: " + exception.getMessage());
-            return "form_edit_course";
+            model.addAttribute("showEditModal", true);
+            return "course_manager";
         }
 
         return "redirect:/course_manager/show";
     }
-
-
 
     @GetMapping("/delete_course/{id}")
     public String deleteCourse(@PathVariable("id") int id) {

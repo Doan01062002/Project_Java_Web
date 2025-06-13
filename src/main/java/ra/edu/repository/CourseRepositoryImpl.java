@@ -1,6 +1,5 @@
 package ra.edu.repository;
 
-import ra.edu.dto.CourseDTO;
 import ra.edu.entity.Course;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;

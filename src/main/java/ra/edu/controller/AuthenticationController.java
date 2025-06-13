@@ -81,10 +81,6 @@ public class AuthenticationController {
         return "home_admin";
     }
 
-
-
-
-
     // --- TRANG HOME CHO USER (MỚI) ---
     @GetMapping("/home_user")
     public String showHomePage(HttpSession session, Model model) {

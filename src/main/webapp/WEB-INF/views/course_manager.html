@@ -7,16 +7,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .sidebar-item:hover {
-            background-color: #f3f4f6;
+        .modal {
+            display: flex;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
         }
-        .course-row:hover {
-            background-color: #f9fafb;
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90vw;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: fadeIn 0.2s ease-in-out;
         }
-        .action-btn:hover {
-            transform: scale(1.05);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95);}
+            to { opacity: 1; transform: scale(1);}
         }
-
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -95,7 +109,7 @@
         <!-- Page Header -->
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-gray-900">Course Manager</h1>
-            <a th:href="@{/course_manager/add}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+            <a th:href="@{/course_manager/show(add='true')}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                 Add new course
             </a>
         </div>
@@ -142,10 +156,9 @@
                     <td class="py-4 px-6 text-gray-600" th:text="${course.duration}"></td>
                     <td class="py-4 px-6 text-gray-600" th:text="${course.instructor}"></td>
                     <td class="py-4 px-6">
-                        <img th:src="${course.image}"
-                             alt="Course" class="w-10 h-10 rounded object-cover">
+                        <img th:src="${course.image}" alt="Course" class="w-10 h-10 rounded object-cover">
                     </td>
-                    <td class="py-4 px-6 text-gray-600" th:text="${course.createAt}">16/09/2025</td>
+                    <td class="py-4 px-6 text-gray-600" th:text="${course.createAt}"></td>
                     <td class="py-4 px-6">
                         <div class="flex space-x-2">
                             <a th:href="@{/course_manager/delete_course/{id}(id=${course.id})}"
@@ -153,7 +166,7 @@
                                class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
                                 <i class="fas fa-trash"></i>
                             </a>
-                            <a th:href="@{/course_manager/edit/{id}(id=${course.id})}" class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
+                            <a th:href="@{/course_manager/show(edit=${course.id})}" class="action-btn text-blue-500 hover:bg-blue-50 p-2 rounded transition-all">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </div>
@@ -192,8 +205,86 @@
     </main>
 </div>
 
-<!--<div th:insert="course_manager_modal::MODAL_ADD_COURSE"></div>-->
-<!-- Add Course Modal -->
+<!-- ----------- MODAL ADD COURSE ---------- -->
+<div th:if="${showAddModal}" class="modal">
+    <div class="modal-content">
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">Add new course</h2>
+        </div>
+        <form th:action="@{/course_manager/save}" th:object="${courseDTO}" method="post" enctype="multipart/form-data" class="p-6 space-y-4">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Course Name</label>
+                <input type="text" id="name" th:field="*{name}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter course name" >
+                <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></div>
+            </div>
+            <div>
+                <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <input type="number" id="duration" th:field="*{duration}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Duration in hours" >
+                <div th:if="${#fields.hasErrors('duration')}" th:errors="*{duration}" style="color:red;"></div>
+            </div>
+            <div>
+                <label for="instructor" class="block text-sm font-medium text-gray-700 mb-2">Instructor</label>
+                <input type="text" id="instructor" th:field="*{instructor}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter instructor name" >
+                <div th:if="${#fields.hasErrors('instructor')}" th:errors="*{instructor}" style="color:red;"></div>
+            </div>
+            <div>
+                <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                <input type="file" id="imageFile" th:field="*{imageFile}">
+            </div>
+            <div class="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+                <a th:href="@{/course_manager/show}" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                    Add
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
+<!-- ----------- MODAL EDIT COURSE ---------- -->
+<div th:if="${showEditModal}" class="modal">
+    <div class="modal-content">
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">Edit course</h2>
+        </div>
+        <form th:action="@{/course_manager/save_edit_course}" th:object="${courseDTO}" method="post" enctype="multipart/form-data" class="p-6 space-y-4">
+            <input type="hidden" th:field="*{id}"/>
+            <input type="hidden" th:field="*{image}" />
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Course Name</label>
+                <input type="text" id="name" th:field="*{name}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter course name" >
+                <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></div>
+            </div>
+            <div>
+                <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <input type="number" id="duration" th:field="*{duration}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Duration in hours" >
+                <div th:if="${#fields.hasErrors('duration')}" th:errors="*{duration}" style="color:red;"></div>
+            </div>
+            <div>
+                <label for="instructor" class="block text-sm font-medium text-gray-700 mb-2">Instructor</label>
+                <input type="text" id="instructor" th:field="*{instructor}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter instructor name" >
+                <div th:if="${#fields.hasErrors('instructor')}" th:errors="*{instructor}" style="color:red;"></div>
+            </div>
+            <div>
+                <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                <input type="file" id="imageFile" th:field="*{imageFile}">
+                <div th:if="${courseDTO.image}">
+                    <p>Ảnh hiện tại:</p>
+                    <img th:src="${courseDTO.image}" alt="Ảnh hiện tại" style="max-height: 200px; margin-top: 10px;">
+                </div>
+            </div>
+            <div class="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+                <a th:href="@{/course_manager/show}" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                    Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

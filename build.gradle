@@ -65,8 +65,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa
     implementation("org.springframework.data:spring-data-jpa:3.4.2")
-
-    // Logging
 }
 
 test {
