@@ -96,175 +96,58 @@
         <h1 class="text-4xl font-bold text-yellow-500 mb-6">List Course</h1>
 
         <!-- Search Bar -->
-        <div class="max-w-md mx-auto">
+        <form th:action="@{/courses/list}" method="get" class="max-w-md mx-auto mb-8">
             <div class="relative">
-                <input type="text"
-                       placeholder="Search course by name"
+                <input type="text" name="keyword" th:value="${keyword}" placeholder="Search course by name"
                        class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition-colors">
+                <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition-colors">
                     Search
                 </button>
             </div>
-        </div>
+        </form>
     </div>
 
     <!-- Course Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
-        <!-- Course Card 1 - Basic Web Programming -->
-        <div class="bg-white rounded-xl card-shadow hover-lift overflow-hidden">
-            <div class="course-card h-48 p-6 text-white relative">
-                <div class="absolute top-4 right-4">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                        <i class="fas fa-code text-white text-xl"></i>
-                    </div>
-                </div>
-                <div class="absolute bottom-6 left-6">
-                    <img src="https://via.placeholder.com/60x60/ffffff/ff6b35?text=👩‍💻" alt="Instructor" class="w-16 h-16 rounded-full border-2 border-white">
-                </div>
-                <div class="absolute top-4 left-4 text-xs bg-white bg-opacity-20 px-2 py-1 rounded">
-                    DISCOVER
-                </div>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div th:each="course : ${listCourse}" class="bg-white rounded-xl shadow hover-lift overflow-hidden">
             <div class="p-6">
-                <h3 class="font-bold text-lg mb-2">Basic Web Programming</h3>
-                <p class="text-gray-600 text-sm mb-1">Let's explore</p>
-                <p class="text-gray-600 text-sm mb-1">Duration: 120 hour</p>
-                <p class="text-gray-600 text-sm mb-4">Instructor: John Smith</p>
-                <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
-                    Registry
-                </button>
-            </div>
-        </div>
-
-        <!-- Course Card 2 - Programming with Java -->
-        <div class="bg-white rounded-xl card-shadow hover-lift overflow-hidden">
-            <div class="java-card h-48 p-6 text-white relative">
-                <div class="absolute top-4 right-4">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                        <i class="fab fa-java text-white text-xl"></i>
-                    </div>
-                </div>
-                <div class="absolute bottom-6 left-6">
-                    <div class="text-left">
-                        <div class="text-sm opacity-80">• React</div>
-                        <div class="text-sm opacity-80">• Angular</div>
-                        <div class="text-sm opacity-80">• Vue</div>
-                    </div>
-                </div>
-                <div class="absolute top-4 left-4 text-xs bg-white bg-opacity-20 px-2 py-1 rounded">
-                    DISCOVER
-                </div>
-            </div>
-            <div class="p-6">
-                <h3 class="font-bold text-lg mb-2">Programming with Java</h3>
-                <p class="text-gray-600 text-sm mb-1">Let's explore</p>
-                <p class="text-gray-600 text-sm mb-1">Duration: 120 hour</p>
-                <p class="text-gray-600 text-sm mb-4">Instructor: John Smith</p>
-                <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
-                    Registry
-                </button>
-            </div>
-        </div>
-
-        <!-- Course Card 3 - Basic Web Programming (Registered) -->
-        <div class="bg-white rounded-xl card-shadow hover-lift overflow-hidden">
-            <div class="course-card h-48 p-6 text-white relative">
-                <div class="absolute top-4 right-4">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                        <i class="fas fa-code text-white text-xl"></i>
-                    </div>
-                </div>
-                <div class="absolute bottom-6 left-6">
-                    <img src="https://via.placeholder.com/60x60/ffffff/ff6b35?text=👩‍💻" alt="Instructor" class="w-16 h-16 rounded-full border-2 border-white">
-                </div>
-                <div class="absolute top-4 left-4 text-xs bg-white bg-opacity-20 px-2 py-1 rounded">
-                    DISCOVER
-                </div>
-            </div>
-            <div class="p-6">
-                <h3 class="font-bold text-lg mb-2">Basic Web Programming</h3>
-                <p class="text-gray-600 text-sm mb-1">Let's explore</p>
-                <p class="text-gray-600 text-sm mb-1">Duration: 120 hour</p>
-                <p class="text-gray-600 text-sm mb-4">Instructor: John Smith</p>
-                <button class="w-full bg-gray-400 text-white py-2 rounded-lg cursor-not-allowed">
-                    Registered
-                </button>
-            </div>
-        </div>
-
-        <!-- Course Card 4 - Data Science with Python -->
-        <div class="bg-white rounded-xl card-shadow hover-lift overflow-hidden">
-            <div class="python-card h-48 p-6 text-white relative">
-                <div class="absolute top-4 right-4">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                        <i class="fab fa-python text-white text-xl"></i>
-                    </div>
-                </div>
-                <div class="absolute bottom-6 left-6">
-                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
-                        <div class="text-xs">CHƯƠNG TRÌNH ĐÀO TẠO</div>
-                        <div class="text-xs">DATA SCIENTIST</div>
-                    </div>
-                </div>
-                <div class="absolute top-4 left-4 text-xs bg-white bg-opacity-20 px-2 py-1 rounded">
-                    DISCOVER
-                </div>
-            </div>
-            <div class="p-6">
-                <h3 class="font-bold text-lg mb-2">Data Science with Python</h3>
-                <p class="text-gray-600 text-sm mb-1">Let's explore</p>
-                <p class="text-gray-600 text-sm mb-1">Duration: 150 hour</p>
-                <p class="text-gray-600 text-sm mb-4">Instructor: John Smith</p>
-                <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
-                    Registry
-                </button>
-            </div>
-        </div>
-
-        <!-- Course Card 5 - Basic Web Programming -->
-        <div class="bg-white rounded-xl card-shadow hover-lift overflow-hidden">
-            <div class="course-card h-48 p-6 text-white relative">
-                <div class="absolute top-4 right-4">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                        <i class="fas fa-code text-white text-xl"></i>
-                    </div>
-                </div>
-                <div class="absolute bottom-6 left-6">
-                    <img src="https://via.placeholder.com/60x60/ffffff/ff6b35?text=👩‍💻" alt="Instructor" class="w-16 h-16 rounded-full border-2 border-white">
-                </div>
-                <div class="absolute top-4 left-4 text-xs bg-white bg-opacity-20 px-2 py-1 rounded">
-                    DISCOVER
-                </div>
-            </div>
-            <div class="p-6">
-                <h3 class="font-bold text-lg mb-2">Basic Web Programming</h3>
-                <p class="text-gray-600 text-sm mb-1">Let's explore</p>
-                <p class="text-gray-600 text-sm mb-1">Duration: 120 hour</p>
-                <p class="text-gray-600 text-sm mb-4">Instructor: John Smith</p>
-                <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
-                    Registry
-                </button>
+                <h3 class="font-bold text-lg mb-2" th:text="${course.name}"></h3>
+                <p class="text-gray-600 text-sm mb-1">Duration: <span th:text="${course.duration}"></span> hour</p>
+                <p class="text-gray-600 text-sm mb-4">Instructor: <span th:text="${course.instructor}"></span></p>
+                <form th:action="@{/courses/register}" method="post" th:if="${registeredCourseIds != null}">
+                    <input type="hidden" name="courseId" th:value="${course.id}" />
+                    <button type="submit"
+                            th:disabled="${registeredCourseIds.contains(course.id)}"
+                            th:classappend="${registeredCourseIds.contains(course.id)} ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'"
+                            class="w-full text-white py-2 rounded-lg transition-colors">
+                        <span th:text="${registeredCourseIds.contains(course.id)} ? 'Registered' : 'Registry'"></span>
+                    </button>
+                </form>
+                <form th:if="${registeredCourseIds == null}">
+                    <a href="/login_form" class="w-full block bg-blue-500 text-white py-2 rounded-lg text-center">Đăng nhập để đăng ký</a>
+                </form>
             </div>
         </div>
     </div>
 
     <!-- Pagination -->
     <div class="flex justify-center items-center space-x-2">
-        <button class="px-3 py-2 text-gray-500 hover:text-gray-700">
+        <a th:if="${currentPage > 1}"
+           th:href="@{/courses/list(page=${currentPage - 1}, keyword=${keyword})}"
+           class="px-3 py-2 text-gray-500 hover:text-gray-700">
             <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">1</button>
-        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">2</button>
-        <button class="px-3 py-2 bg-blue-500 text-white rounded">3</button>
-        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">4</button>
-        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">5</button>
-        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">6</button>
-        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">7</button>
-        <span class="px-2 text-gray-400">...</span>
-        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">20</button>
-        <button class="px-3 py-2 text-gray-500 hover:text-gray-700">
+        </a>
+        <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+            <a th:href="@{/courses/list(page=${i}, keyword=${keyword})}"
+               th:text="${i}"
+               th:classappend="${i == currentPage} ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100'"
+               class="px-3 py-2 rounded"></a>
+        </th:block>
+        <a th:if="${currentPage < totalPages}"
+           th:href="@{/courses/list(page=${currentPage + 1}, keyword=${keyword})}"
+           class="px-3 py-2 text-gray-500 hover:text-gray-700">
             <i class="fas fa-chevron-right"></i>
-        </button>
+        </a>
     </div>
 </main>
 

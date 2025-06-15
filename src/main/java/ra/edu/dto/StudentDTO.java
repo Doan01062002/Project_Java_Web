@@ -57,5 +57,4 @@ public class StudentDTO {
 
     @NotNull(message = "Vai trò không được để trống")
     private Boolean role = false; // false = Student, true = Admin
-
 }
