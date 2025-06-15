@@ -17,6 +17,7 @@ import ra.edu.entity.Course;
 import ra.edu.service.CourseService;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -35,24 +36,33 @@ public class CourseManagerController {
     private CourseService courseService;
 
     @GetMapping("/show")
-    public String showCourseManager(@RequestParam(name = "page", defaultValue = "1") int page,
-                                    @RequestParam(name = "add", required = false) String add,
-                                    @RequestParam(name = "edit", required = false) Integer editId,
-                                    HttpSession session,
-                                    Model model) {
+    public String showCourseManager(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
+            @RequestParam(name = "add", required = false) String add,
+            @RequestParam(name = "edit", required = false) Integer editId,
+            HttpSession session, Model model) {
+
         StudentDTO loggedInUser = (StudentDTO) session.getAttribute("loggedInUser");
         if (loggedInUser == null || !Boolean.TRUE.equals(loggedInUser.getRole())) {
             return "redirect:/login_form";
         }
 
         int pageSize = 5;
-        long totalCourses = courseService.countTotalCourses();
+        List<Course> courses = courseService.searchAndSortCourses(keyword, sortBy, sortDir, page, pageSize);
+        long totalCourses = courseService.countSearchedCourses(keyword);
         int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
 
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("listCourse", courseService.findAllByPage(page, pageSize));
+        model.addAttribute("listCourse", courses);
+        model.addAttribute("keyword", keyword == null ? "" : keyword);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
 
+        // Modal code giữ nguyên như cũ
         if (add != null) {
             model.addAttribute("showAddModal", true);
             model.addAttribute("courseDTO", new CourseDTO());
@@ -91,11 +101,23 @@ public class CourseManagerController {
             return "course_manager";
         }
 
+
         if (courseService.isCourseNameDuplicate(courseDTO.getName())) {
             bindingResult.rejectValue("name", "error.courseDTO", "Tên khoá học đã tồn tại");
+
+            // Phục hồi dữ liệu phân trang để quay về course_manager
+            int pageSize = 5;
+            long totalCourses = courseService.countTotalCourses();
+            int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("listCourse", courseService.findAllByPage(page, pageSize));
             model.addAttribute("showAddModal", true);
+
             return "course_manager";
         }
+
 
         MultipartFile fileImage = courseDTO.getImageFile();
         try {
@@ -131,12 +153,22 @@ public class CourseManagerController {
             return "course_manager";
         }
 
-        // Kiểm tra trùng tên với khoá học khác
         if (courseService.isCourseNameDuplicate(courseDTO.getName(), courseDTO.getId())) {
             bindingResult.rejectValue("name", "error.courseDTO", "Tên khoá học đã tồn tại");
+
+            // Phục hồi dữ liệu
+            int pageSize = 5;
+            long totalCourses = courseService.countTotalCourses();
+            int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("listCourse", courseService.findAllByPage(page, pageSize));
             model.addAttribute("showEditModal", true);
+
             return "course_manager";
         }
+
 
         MultipartFile fileImage = courseDTO.getImageFile();
         try {

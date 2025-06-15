@@ -22,7 +22,6 @@ public class CourseDTO {
     @Max(value = 365, message = "Thời lượng không được vượt quá 365 ngày")
     private Integer duration;
 
-//    @NotBlank(message = "Tên giảng viên không được để trống")
     @Size(min = 3, max = 50, message = "Tên giảng viên phải từ 3 đến 50 ký tự")
     private String instructor;
 

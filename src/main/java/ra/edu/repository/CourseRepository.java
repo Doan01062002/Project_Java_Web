@@ -21,4 +21,8 @@ public interface CourseRepository {
     Course findCourseByName(String name); // hàm tìm kiếm khoá học thoe tên
 
     void deleteCourse(Course course);
+
+    // Thêm vào interface
+    List<Course> searchAndSortCourses(String keyword, String sortBy, String sortDir, int page, int pageSize);
+    long countSearchedCourses(String keyword);
 }

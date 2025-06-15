@@ -80,4 +80,14 @@ public class CourseServiceImpl implements CourseService {
         course.setImage(courseDTO.getImage());
         return course;
     }
+
+    @Override
+    public List<Course> searchAndSortCourses(String keyword, String sortBy, String sortDir, int page, int pageSize) {
+        return courseRepository.searchAndSortCourses(keyword, sortBy, sortDir, page, pageSize);
+    }
+
+    @Override
+    public long countSearchedCourses(String keyword) {
+        return courseRepository.countSearchedCourses(keyword);
+    }
 }

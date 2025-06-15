@@ -116,23 +116,30 @@
 
         <!-- Search and Sort Bar -->
         <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
-            <div class="flex items-center justify-between">
+            <form th:action="@{/course_manager/show}" method="get" class="flex items-center justify-between mb-6">
                 <div class="flex items-center space-x-4">
-                    <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option>Sort By ID</option>
-                        <option>Sort By Name</option>
-                        <option>Sort By Date</option>
-                    </select>
-                </div>
-
-                <div class="flex items-center space-x-2">
-                    <input type="text" placeholder="search course by name"
+                    <input type="hidden" name="page" th:value="${currentPage}"/>
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Search course by name"
                            class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                         Search
                     </button>
                 </div>
-            </div>
+                <div class="flex items-center space-x-2">
+                    <label>Sắp xếp:</label>
+                    <select name="sortBy" th:value="${sortBy}" class="border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="id" th:selected="${sortBy == 'id'}">ID</option>
+                        <option value="name" th:selected="${sortBy == 'name'}">Name</option>
+                    </select>
+                    <select name="sortDir" th:value="${sortDir}" class="border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="asc" th:selected="${sortDir == 'asc'}">Tăng dần</option>
+                        <option value="desc" th:selected="${sortDir == 'desc'}">Giảm dần</option>
+                    </select>
+                    <button type="submit" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors">
+                        Sort
+                    </button>
+                </div>
+            </form>
         </div>
 
         <!-- Course Table -->
@@ -179,24 +186,22 @@
         <!-- Pagination -->
         <div class="flex items-center justify-center mt-6 space-x-2">
             <a th:if="${currentPage > 1}"
-               th:href="@{|?page=${currentPage - 1}|}"
+               th:href="@{/course_manager/show(page=${currentPage - 1}, keyword=${keyword}, sortBy=${sortBy}, sortDir=${sortDir})}"
                class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors">
                 <i class="fas fa-chevron-left"></i>
             </a>
-
             <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
-        <span th:if="${i == currentPage}"
-              th:text="${i}"
-              class="px-3 py-2 bg-blue-500 text-white rounded"></span>
+    <span th:if="${i == currentPage}"
+          th:text="${i}"
+          class="px-3 py-2 bg-blue-500 text-white rounded"></span>
 
                 <a th:if="${i != currentPage}"
-                   th:href="@{|?page=${i}|}"
+                   th:href="@{/course_manager/show(page=${i}, keyword=${keyword}, sortBy=${sortBy}, sortDir=${sortDir})}"
                    th:text="${i}"
                    class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors"></a>
             </th:block>
-
             <a th:if="${currentPage < totalPages}"
-               th:href="@{|?page=${currentPage + 1}|}"
+               th:href="@{/course_manager/show(page=${currentPage + 1}, keyword=${keyword}, sortBy=${sortBy}, sortDir=${sortDir})}"
                class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors">
                 <i class="fas fa-chevron-right"></i>
             </a>

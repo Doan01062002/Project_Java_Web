@@ -25,4 +25,7 @@ public interface CourseService {
     List<Course> findAllByPage(int page, int pageSize);
     long countTotalCourses();
 
+    // Thêm vào interface
+    List<Course> searchAndSortCourses(String keyword, String sortBy, String sortDir, int page, int pageSize);
+    long countSearchedCourses(String keyword);
 }

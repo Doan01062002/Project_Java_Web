@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RikeiEdu - Danh sách khóa học</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+        .course-card {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+        }
+        .java-card {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+        }
+        .python-card {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+        }
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .modal-icon {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+<!-- Header -->
+<header class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                        <span class="text-2xl font-bold">
+                            <span class="text-red-500">R</span>
+                            <span class="text-blue-500">i</span>
+                            <span class="text-green-500">K</span>
+                            <span class="text-purple-500">E</span>
+                            <span class="text-black">i</span>
+                            <span class="text-yellow-500">Edu</span>
+                        </span>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="text-yellow-500 font-medium border-b-2 border-yellow-500 pb-1">List Course</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900 font-medium">Enrollments</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900 font-medium">Profile</a>
+            </nav>
+
+            <!-- User section -->
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell text-gray-600"></i>
+                    <span class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <img class="h-8 w-8 rounded-full" src="https://via.placeholder.com/32x32/4285f4/ffffff?text=U" alt="User">
+                    <span class="text-sm text-gray-700">Logout</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Title -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-yellow-500 mb-6">List Course</h1>
+
+        <!-- Search Bar -->
+        <div class="max-w-md mx-auto">
+            <div class="relative">
+                <input type="text"
+                       placeholder="Search course by name"
+                       class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition-colors">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
+        <!-- Course Card 1 - Basic Web Programming -->
+        <div class="bg-white rounded-xl card-shadow hover-lift overflow-hidden">
+            <div class="course-card h-48 p-6 text-white relative">
+                <div class="absolute top-4 right-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-code text-white text-xl"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-6 left-6">
+                    <img src="https://via.placeholder.com/60x60/ffffff/ff6b35?text=👩‍💻" alt="Instructor" class="w-16 h-16 rounded-full border-2 border-white">
+                </div>
+                <div class="absolute top-4 left-4 text-xs bg-white bg-opacity-20 px-2 py-1 rounded">
+                    DISCOVER
+                </div>
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-lg mb-2">Basic Web Programming</h3>
+                <p class="text-gray-600 text-sm mb-1">Let's explore</p>
+                <p class="text-gray-600 text-sm mb-1">Duration: 120 hour</p>
+                <p class="text-gray-600 text-sm mb-4">Instructor: John Smith</p>
+                <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    Registry
+                </button>
+            </div>
+        </div>
+
+        <!-- Course Card 2 - Programming with Java -->
+        <div class="bg-white rounded-xl card-shadow hover-lift overflow-hidden">
+            <div class="java-card h-48 p-6 text-white relative">
+                <div class="absolute top-4 right-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <i class="fab fa-java text-white text-xl"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-6 left-6">
+                    <div class="text-left">
+                        <div class="text-sm opacity-80">• React</div>
+                        <div class="text-sm opacity-80">• Angular</div>
+                        <div class="text-sm opacity-80">• Vue</div>
+                    </div>
+                </div>
+                <div class="absolute top-4 left-4 text-xs bg-white bg-opacity-20 px-2 py-1 rounded">
+                    DISCOVER
+                </div>
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-lg mb-2">Programming with Java</h3>
+                <p class="text-gray-600 text-sm mb-1">Let's explore</p>
+                <p class="text-gray-600 text-sm mb-1">Duration: 120 hour</p>
+                <p class="text-gray-600 text-sm mb-4">Instructor: John Smith</p>
+                <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    Registry
+                </button>
+            </div>
+        </div>
+
+        <!-- Course Card 3 - Basic Web Programming (Registered) -->
+        <div class="bg-white rounded-xl card-shadow hover-lift overflow-hidden">
+            <div class="course-card h-48 p-6 text-white relative">
+                <div class="absolute top-4 right-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-code text-white text-xl"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-6 left-6">
+                    <img src="https://via.placeholder.com/60x60/ffffff/ff6b35?text=👩‍💻" alt="Instructor" class="w-16 h-16 rounded-full border-2 border-white">
+                </div>
+                <div class="absolute top-4 left-4 text-xs bg-white bg-opacity-20 px-2 py-1 rounded">
+                    DISCOVER
+                </div>
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-lg mb-2">Basic Web Programming</h3>
+                <p class="text-gray-600 text-sm mb-1">Let's explore</p>
+                <p class="text-gray-600 text-sm mb-1">Duration: 120 hour</p>
+                <p class="text-gray-600 text-sm mb-4">Instructor: John Smith</p>
+                <button class="w-full bg-gray-400 text-white py-2 rounded-lg cursor-not-allowed">
+                    Registered
+                </button>
+            </div>
+        </div>
+
+        <!-- Course Card 4 - Data Science with Python -->
+        <div class="bg-white rounded-xl card-shadow hover-lift overflow-hidden">
+            <div class="python-card h-48 p-6 text-white relative">
+                <div class="absolute top-4 right-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <i class="fab fa-python text-white text-xl"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-6 left-6">
+                    <div class="bg-white bg-opacity-20 rounded-lg p-3">
+                        <div class="text-xs">CHƯƠNG TRÌNH ĐÀO TẠO</div>
+                        <div class="text-xs">DATA SCIENTIST</div>
+                    </div>
+                </div>
+                <div class="absolute top-4 left-4 text-xs bg-white bg-opacity-20 px-2 py-1 rounded">
+                    DISCOVER
+                </div>
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-lg mb-2">Data Science with Python</h3>
+                <p class="text-gray-600 text-sm mb-1">Let's explore</p>
+                <p class="text-gray-600 text-sm mb-1">Duration: 150 hour</p>
+                <p class="text-gray-600 text-sm mb-4">Instructor: John Smith</p>
+                <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    Registry
+                </button>
+            </div>
+        </div>
+
+        <!-- Course Card 5 - Basic Web Programming -->
+        <div class="bg-white rounded-xl card-shadow hover-lift overflow-hidden">
+            <div class="course-card h-48 p-6 text-white relative">
+                <div class="absolute top-4 right-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-code text-white text-xl"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-6 left-6">
+                    <img src="https://via.placeholder.com/60x60/ffffff/ff6b35?text=👩‍💻" alt="Instructor" class="w-16 h-16 rounded-full border-2 border-white">
+                </div>
+                <div class="absolute top-4 left-4 text-xs bg-white bg-opacity-20 px-2 py-1 rounded">
+                    DISCOVER
+                </div>
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-lg mb-2">Basic Web Programming</h3>
+                <p class="text-gray-600 text-sm mb-1">Let's explore</p>
+                <p class="text-gray-600 text-sm mb-1">Duration: 120 hour</p>
+                <p class="text-gray-600 text-sm mb-4">Instructor: John Smith</p>
+                <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    Registry
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center items-center space-x-2">
+        <button class="px-3 py-2 text-gray-500 hover:text-gray-700">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">1</button>
+        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">2</button>
+        <button class="px-3 py-2 bg-blue-500 text-white rounded">3</button>
+        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">4</button>
+        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">5</button>
+        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">6</button>
+        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">7</button>
+        <span class="px-2 text-gray-400">...</span>
+        <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">20</button>
+        <button class="px-3 py-2 text-gray-500 hover:text-gray-700">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</main>
+
+<!-- Registration Confirmation Modal -->
+<div id="confirmationModal" class="fixed inset-0 z-50 hidden">
+    <!-- Backdrop -->
+    <div class="modal-backdrop fixed inset-0"></div>
+
+    <!-- Modal Content -->
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform">
+            <!-- Modal Header -->
+            <div class="text-center p-8 pb-4">
+                <!-- Icon -->
+                <div class="modal-icon w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center">
+                    <i class="fas fa-question-circle text-white text-3xl"></i>
+                </div>
+
+                <!-- Title -->
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Xác nhận đăng ký</h2>
+                <p class="text-gray-600 text-sm">Bạn có chắc chắn muốn đăng ký khóa học này không?</p>
+            </div>
+
+            <!-- Course Info -->
+            <div class="px-8 pb-6">
+                <div class="bg-gray-50 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-book text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Khóa học</p>
+                            <p id="modalCourseName" class="font-semibold text-gray-800">Basic Web Programming</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-user-tie text-green-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Giảng viên</p>
+                            <p id="modalInstructor" class="font-semibold text-gray-800">John Smith</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clock text-purple-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Thời lượng</p>
+                            <p id="modalDuration" class="font-semibold text-gray-800">120 hour</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-3 p-6 pt-0">
+                <button class="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors">
+                    Hủy
+                </button>
+                <button class="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-xl font-medium hover:from-green-600 hover:to-green-700 transition-all shadow-lg">
+                    Xác nhận đăng ký
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="fixed inset-0 z-50 hidden">
+    <!-- Backdrop -->
+    <div class="modal-backdrop fixed inset-0"></div>
+
+    <!-- Modal Content -->
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform text-center">
+            <!-- Success Icon -->
+            <div class="p-8">
+                <div class="w-20 h-20 bg-gradient-to-r from-green-400 to-green-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+                    <i class="fas fa-check text-white text-3xl"></i>
+                </div>
+
+                <!-- Title -->
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Đăng ký thành công!</h2>
+                <p class="text-gray-600 mb-6">Bạn đã đăng ký khóa học thành công. Chúng tôi sẽ liên hệ với bạn sớm nhất.</p>
+
+                <!-- Close Button -->
+                <button class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
