@@ -31,6 +31,10 @@
             from { opacity: 0; transform: scale(0.95);}
             to { opacity: 1; transform: scale(1);}
         }
+        .course-image {
+            height: 70px;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -119,25 +123,37 @@
             <form th:action="@{/course_manager/show}" method="get" class="flex items-center justify-between mb-6">
                 <div class="flex items-center space-x-4">
                     <input type="hidden" name="page" th:value="${currentPage}"/>
-                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Search course by name"
-                           class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+
+                    <div class="relative">
+                        <input type="text" name="keyword" th:value="${keyword}" placeholder="Search course by name"
+                               class="border border-gray-300 rounded-lg px-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+                        <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                         Search
                     </button>
                 </div>
+
                 <div class="flex items-center space-x-2">
                     <label>Sắp xếp:</label>
-                    <select name="sortBy" th:value="${sortBy}" class="border border-gray-300 rounded-lg px-3 py-2">
+                    <select name="sortBy" th:value="${sortBy}" class="border border-gray-300 rounded-lg px-3 py-2"
+                            onchange="this.form.submit()">
                         <option value="id" th:selected="${sortBy == 'id'}">ID</option>
                         <option value="name" th:selected="${sortBy == 'name'}">Name</option>
                     </select>
-                    <select name="sortDir" th:value="${sortDir}" class="border border-gray-300 rounded-lg px-3 py-2">
+                    <select name="sortDir" th:value="${sortDir}" class="border border-gray-300 rounded-lg px-3 py-2"
+                            onchange="this.form.submit()">
                         <option value="asc" th:selected="${sortDir == 'asc'}">Tăng dần</option>
                         <option value="desc" th:selected="${sortDir == 'desc'}">Giảm dần</option>
                     </select>
-                    <button type="submit" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors">
-                        Sort
-                    </button>
                 </div>
             </form>
         </div>
@@ -165,11 +181,10 @@
                     <td class="py-4 px-6">
                         <img th:src="${course.image}" alt="Course" class="w-10 h-10 rounded object-cover">
                     </td>
-                    <td class="py-4 px-6 text-gray-600" th:text="${course.createAt}"></td>
+                    <td class="py-4 px-6 text-gray-600" th:text="${#temporals.format(course.createAt, 'dd/MM/yyyy')}"></td>
                     <td class="py-4 px-6">
                         <div class="flex space-x-2">
-                            <a th:href="@{/course_manager/delete_course/{id}(id=${course.id})}"
-                               onclick="return confirm('Bạn có chắc chắn muốn xoá khoá học này ?')"
+                            <a th:href="@{/course_manager/show(confirm=${course.id}, page=${currentPage}, keyword=${keyword}, sortBy=${sortBy}, sortDir=${sortDir})}"
                                class="action-btn text-red-500 hover:bg-red-50 p-2 rounded transition-all">
                                 <i class="fas fa-trash"></i>
                             </a>
@@ -250,7 +265,7 @@
 
 <!-- ----------- MODAL EDIT COURSE ---------- -->
 <div th:if="${showEditModal}" class="modal">
-    <div class="modal-content">
+    <div class="modal-content" style="width: 500px; max-width: 90vw;">
         <div class="flex items-center justify-between p-6 border-b border-gray-200">
             <h2 class="text-xl font-semibold text-gray-900">Edit course</h2>
         </div>
@@ -258,26 +273,26 @@
             <input type="hidden" th:field="*{id}"/>
             <input type="hidden" th:field="*{image}" />
             <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Course Name</label>
-                <input type="text" id="name" th:field="*{name}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter course name" >
+                <label for="namec" class="block text-sm font-medium text-gray-700 mb-2">Course Name</label>
+                <input type="text" id="namec" th:field="*{name}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter course name" >
                 <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></div>
             </div>
             <div>
-                <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
-                <input type="number" id="duration" th:field="*{duration}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Duration in hours" >
+                <label for="durationc" class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <input type="number" id="durationc" th:field="*{duration}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Duration in hours" >
                 <div th:if="${#fields.hasErrors('duration')}" th:errors="*{duration}" style="color:red;"></div>
             </div>
             <div>
-                <label for="instructor" class="block text-sm font-medium text-gray-700 mb-2">Instructor</label>
-                <input type="text" id="instructor" th:field="*{instructor}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter instructor name" >
+                <label for="instructorc" class="block text-sm font-medium text-gray-700 mb-2">Instructor</label>
+                <input type="text" id="instructorc" th:field="*{instructor}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter instructor name" >
                 <div th:if="${#fields.hasErrors('instructor')}" th:errors="*{instructor}" style="color:red;"></div>
             </div>
             <div>
-                <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
-                <input type="file" id="imageFile" th:field="*{imageFile}">
+                <label for="imageFilec" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                <input type="file" id="imageFilec" th:field="*{imageFile}">
                 <div th:if="${courseDTO.image}">
                     <p>Ảnh hiện tại:</p>
-                    <img th:src="${courseDTO.image}" alt="Ảnh hiện tại" style="max-height: 200px; margin-top: 10px;">
+                    <img class="course-image" th:src="${courseDTO.image}" alt="Ảnh hiện tại" style="max-height: 200px; margin-top: 10px;">
                 </div>
             </div>
             <div class="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
@@ -289,6 +304,48 @@
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- ----------- MODAL CONFIRM DELETE COURSE (THYMELEAF) ---------- -->
+<div th:if="${showConfirmModal}" class="fixed inset-0 z-50 flex items-center justify-center">
+    <!-- Backdrop -->
+    <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-40"></div>
+
+    <!-- Modal Content -->
+    <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-sm w-full mx-4 transform">
+        <!-- Header với icon -->
+        <div class="text-left p-6 pb-4">
+            <!-- Icon thông tin màu xanh -->
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-info text-blue-500 text-xl"></i>
+            </div>
+
+            <!-- Tiêu đề -->
+            <h2 class="text-xl font-semibold text-gray-900 mb-3">Xác nhận</h2>
+
+            <!-- Nội dung -->
+            <p class="text-gray-600 text-base leading-relaxed">
+                Bạn có chắc chắn muốn xoá khoá học
+                <span class="font-medium text-yellow-600" th:text="${confirmCourse.name}"></span>
+                không?
+            </p>
+        </div>
+
+        <!-- Buttons - Đặt ở góc phải dưới -->
+        <div class="flex justify-end space-x-2 p-6 pt-2">
+            <!-- Nút Hủy -->
+            <a th:href="@{/course_manager/show(page=${currentPage}, keyword=${keyword}, sortBy=${sortBy}, sortDir=${sortDir})}"
+               class="bg-gray-100 text-gray-600 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors border border-gray-200">
+                Hủy
+            </a>
+
+            <!-- Nút Ok -->
+            <a th:href="@{/course_manager/delete_course/{id}(id=${confirmCourse.id})}"
+               class="bg-red-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+                Ok
+            </a>
+        </div>
     </div>
 </div>
 </body>

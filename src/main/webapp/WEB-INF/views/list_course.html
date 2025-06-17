@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RikeiEdu - Danh sách khóa học</title>
+    <title>RikkeiEdu - Danh sách khóa học</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -46,6 +46,10 @@
         .modal-icon {
             background: linear-gradient(135deg, #4ade80, #22c55e);
         }
+        .course-image {
+            height: 200px;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -55,21 +59,14 @@
         <div class="flex justify-between items-center h-16">
             <!-- Logo -->
             <div class="flex items-center">
-                <div class="flex-shrink-0">
-                        <span class="text-2xl font-bold">
-                            <span class="text-red-500">R</span>
-                            <span class="text-blue-500">i</span>
-                            <span class="text-green-500">K</span>
-                            <span class="text-purple-500">E</span>
-                            <span class="text-black">i</span>
-                            <span class="text-yellow-500">Edu</span>
-                        </span>
+                <div class="text-2xl font-bold">
+                    <img class="h-8 inline-block" src="https://res.cloudinary.com/dlz6sulzj/image/upload/v1749632988/819bc04f5546ebd7a87a7a8ebe401a97208935eb_wjwly8.png">
                 </div>
             </div>
 
             <!-- Navigation -->
             <nav class="hidden md:flex space-x-8">
-                <a href="#" class="text-yellow-500 font-medium border-b-2 border-yellow-500 pb-1">List Course</a>
+                <a href="#" class="text-blue-500 font-medium border-b-2 border-blue-500 pb-1">List Course</a>
                 <a href="#" class="text-gray-700 hover:text-gray-900 font-medium">Enrollments</a>
                 <a href="#" class="text-gray-700 hover:text-gray-900 font-medium">Profile</a>
             </nav>
@@ -81,8 +78,9 @@
                     <span class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <img class="h-8 w-8 rounded-full" src="https://via.placeholder.com/32x32/4285f4/ffffff?text=U" alt="User">
-                    <span class="text-sm text-gray-700">Logout</span>
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face"
+                         alt="User" class="w-8 h-8 rounded-full">
+                    <a th:href="@{/logout}" class="text-sm font-medium text-gray-700">Logout</a>
                 </div>
             </div>
         </div>
@@ -110,12 +108,15 @@
     <!-- Course Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         <div th:each="course : ${listCourse}" class="bg-white rounded-xl shadow hover-lift overflow-hidden">
-            <div class="p-6">
+            <div class="p-6 flex-">
+                <img th:src="${course.image}" alt="Course Image" class="w-full course-image">
                 <h3 class="font-bold text-lg mb-2" th:text="${course.name}"></h3>
                 <p class="text-gray-600 text-sm mb-1">Duration: <span th:text="${course.duration}"></span> hour</p>
                 <p class="text-gray-600 text-sm mb-4">Instructor: <span th:text="${course.instructor}"></span></p>
-                <form th:action="@{/courses/register}" method="post" th:if="${registeredCourseIds != null}">
+                <form th:action="@{/courses/register-confirm}" method="post" th:if="${registeredCourseIds != null}">
                     <input type="hidden" name="courseId" th:value="${course.id}" />
+                    <input type="hidden" name="page" th:value="${currentPage}" />
+                    <input type="hidden" name="keyword" th:value="${keyword}" />
                     <button type="submit"
                             th:disabled="${registeredCourseIds.contains(course.id)}"
                             th:classappend="${registeredCourseIds.contains(course.id)} ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'"
@@ -124,11 +125,12 @@
                     </button>
                 </form>
                 <form th:if="${registeredCourseIds == null}">
-                    <a href="/login_form" class="w-full block bg-blue-500 text-white py-2 rounded-lg text-center">Đăng nhập để đăng ký</a>
+                    <a href="/login_form" class="w-full block bg-blue-500 text-white py-2 rounded-lg text-center">Đăng ký</a>
                 </form>
             </div>
         </div>
     </div>
+    <br>
 
     <!-- Pagination -->
     <div class="flex justify-center items-center space-x-2">
@@ -151,97 +153,53 @@
     </div>
 </main>
 
-<!-- Registration Confirmation Modal -->
-<div id="confirmationModal" class="fixed inset-0 z-50 hidden">
+<!-- Modal xác nhận đăng ký -->
+<div th:if="${showConfirmModal}" class="fixed inset-0 z-50 flex items-center justify-center">
     <!-- Backdrop -->
-    <div class="modal-backdrop fixed inset-0"></div>
+    <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-40"></div>
 
     <!-- Modal Content -->
-    <div class="fixed inset-0 flex items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform">
-            <!-- Modal Header -->
-            <div class="text-center p-8 pb-4">
-                <!-- Icon -->
-                <div class="modal-icon w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center">
-                    <i class="fas fa-question-circle text-white text-3xl"></i>
-                </div>
-
-                <!-- Title -->
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">Xác nhận đăng ký</h2>
-                <p class="text-gray-600 text-sm">Bạn có chắc chắn muốn đăng ký khóa học này không?</p>
+    <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-sm w-full mx-4 transform">
+        <!-- Header với icon -->
+        <div class="text-left p-6 pb-4">
+            <!-- Icon thông tin màu xanh -->
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-info text-blue-500 text-xl"></i>
             </div>
 
-            <!-- Course Info -->
-            <div class="px-8 pb-6">
-                <div class="bg-gray-50 rounded-xl p-4 space-y-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-book text-blue-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Khóa học</p>
-                            <p id="modalCourseName" class="font-semibold text-gray-800">Basic Web Programming</p>
-                        </div>
-                    </div>
+            <!-- Tiêu đề -->
+            <h2 class="text-xl font-semibold text-gray-900 mb-3">Xác nhận</h2>
 
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-user-tie text-green-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Giảng viên</p>
-                            <p id="modalInstructor" class="font-semibold text-gray-800">John Smith</p>
-                        </div>
-                    </div>
+            <!-- Nội dung -->
+            <p class="text-gray-600 text-base leading-relaxed">
+                Bạn có chắc chắn muốn đăng ký khóa học
+                <span class="font-medium text-yellow-600" th:text="${confirmCourse.name}">Data Science with Python</span>
+                không?
+            </p>
+        </div>
 
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-clock text-purple-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Thời lượng</p>
-                            <p id="modalDuration" class="font-semibold text-gray-800">120 hour</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex space-x-3 p-6 pt-0">
-                <button class="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors">
+        <!-- Buttons - Đặt ở góc phải dưới -->
+        <div class="flex justify-end space-x-2 p-6 pt-2">
+            <!-- Nút Hủy -->
+            <form th:action="@{/courses/list}" method="get">
+                <input type="hidden" name="page" th:value="${currentPage}" />
+                <input type="hidden" name="keyword" th:value="${keyword}" />
+                <button type="submit"
+                        class="bg-gray-100 text-gray-600 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors border border-gray-200">
                     Hủy
                 </button>
-                <button class="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-xl font-medium hover:from-green-600 hover:to-green-700 transition-all shadow-lg">
-                    Xác nhận đăng ký
+            </form>
+
+            <!-- Nút Ok -->
+            <form th:action="@{/courses/register}" method="post">
+                <input type="hidden" name="courseId" th:value="${confirmCourse.id}" />
+                <input type="hidden" name="page" th:value="${currentPage}" />
+                <input type="hidden" name="keyword" th:value="${keyword}" />
+                <button type="submit"
+                        class="bg-red-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+                    Ok
                 </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Success Modal -->
-<div id="successModal" class="fixed inset-0 z-50 hidden">
-    <!-- Backdrop -->
-    <div class="modal-backdrop fixed inset-0"></div>
-
-    <!-- Modal Content -->
-    <div class="fixed inset-0 flex items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform text-center">
-            <!-- Success Icon -->
-            <div class="p-8">
-                <div class="w-20 h-20 bg-gradient-to-r from-green-400 to-green-500 rounded-full mx-auto mb-6 flex items-center justify-center">
-                    <i class="fas fa-check text-white text-3xl"></i>
-                </div>
-
-                <!-- Title -->
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">Đăng ký thành công!</h2>
-                <p class="text-gray-600 mb-6">Bạn đã đăng ký khóa học thành công. Chúng tôi sẽ liên hệ với bạn sớm nhất.</p>
-
-                <!-- Close Button -->
-                <button class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg">
-                    Đóng
-                </button>
-            </div>
+            </form>
         </div>
     </div>
 </div>

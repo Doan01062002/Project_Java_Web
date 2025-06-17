@@ -37,6 +37,7 @@ public class CourseManagerController {
 
     @GetMapping("/show")
     public String showCourseManager(
+            @RequestParam(name = "confirm", required = false) Integer confirmId,
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
@@ -48,6 +49,12 @@ public class CourseManagerController {
         StudentDTO loggedInUser = (StudentDTO) session.getAttribute("loggedInUser");
         if (loggedInUser == null || !Boolean.TRUE.equals(loggedInUser.getRole())) {
             return "redirect:/login_form";
+        }
+
+        if (confirmId != null) {
+            Course confirmCourse = courseService.getCourseById(confirmId);
+            model.addAttribute("showConfirmModal", true);
+            model.addAttribute("confirmCourse", confirmCourse);
         }
 
         int pageSize = 5;
