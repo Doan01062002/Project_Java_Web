@@ -46,4 +46,40 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
             return enrollments.stream().map(e -> e.getCourse().getId()).collect(Collectors.toList());
         }
     }
+
+    @Override
+    public long countTotalEnrollments() {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(
+                            "SELECT COUNT(e.id) FROM Enrollment e WHERE e.status = :status", Long.class)
+                    .setParameter("status", Enrollment.Status.CONFIRM)
+                    .uniqueResult();
+        }
+    }
+
+    @Override
+    public List<Object[]> countStudentByCourse() {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(
+                            "SELECT e.course, COUNT(e.id) " +
+                                    "FROM Enrollment e WHERE e.status = :status " +
+                                    "GROUP BY e.course", Object[].class)
+                    .setParameter("status", Enrollment.Status.CONFIRM)
+                    .list();
+        }
+    }
+
+    @Override
+    public List<Object[]> top5CoursesByEnrollment() {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(
+                            "SELECT e.course, COUNT(e.id) " +
+                                    "FROM Enrollment e WHERE e.status = :status " +
+                                    "GROUP BY e.course " +
+                                    "ORDER BY COUNT(e.id) DESC", Object[].class)
+                    .setParameter("status", Enrollment.Status.CONFIRM)
+                    .setMaxResults(5)
+                    .list();
+        }
+    }
 }

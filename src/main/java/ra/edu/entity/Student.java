@@ -52,6 +52,9 @@ public class Student {
     private Boolean role = false; //false : Student
                                   // true : Admin
 
+    //  status để khoá học sinh
+    private boolean status = true;
+
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments;
 }

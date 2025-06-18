@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -11,14 +10,11 @@
 <!-- Header -->
 <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
   <div class="flex items-center justify-between">
-    <!-- Logo -->
     <div class="flex items-center">
       <div class="text-2xl font-bold">
-        <img class="h-8 inline-block" src="https://res.cloudinary.com/dlz6sulzj/image/upload/v1749632988/819bc04f5546ebd7a87a7a8ebe401a972...y8.png">
+        <img class="h-8 inline-block" src="https://res.cloudinary.com/dlz6sulzj/image/upload/v1749632988/819bc04f5546ebd7a87a7a8ebe401a97208935eb_wjwly8.png">
       </div>
     </div>
-
-    <!-- Search Bar -->
     <div class="flex-1 max-w-md mx-8">
       <div class="relative">
         <input type="text" placeholder="Type to search"
@@ -30,8 +26,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Right Icons -->
     <div class="flex items-center space-x-3">
       <div class="relative">
         <i class="fa-solid fa-envelope text-gray-600 text-lg cursor-pointer"></i>
@@ -50,6 +44,7 @@
   </div>
 </header>
 
+
 <div class="flex">
   <!-- Sidebar -->
   <aside class="w-64 bg-white shadow-sm h-screen">
@@ -59,17 +54,14 @@
           <i class="fas fa-tachometer-alt mr-3 text-gray-500"></i>
           <span>Dashboard</span>
         </a>
-
         <a th:href="@{/student_manager/show}" class="sidebar-item flex items-center px-6 py-3 text-gray-700 bg-blue-50 border-r-3 border-blue-500 font-medium text-blue-700">
           <i class="fas fa-users mr-3 text-blue-500"></i>
           <span>Students</span>
         </a>
-
         <a th:href="@{/course_manager/show}" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
           <i class="fas fa-book mr-3 text-gray-500"></i>
           <span>Courses</span>
         </a>
-
         <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
           <i class="fas fa-user-plus mr-3 text-gray-500"></i>
           <span>Enrollment</span>
@@ -86,22 +78,29 @@
     </div>
 
     <!-- Search and Sort Controls -->
-    <div class="flex justify-between items-center mb-6">
+    <form class="flex justify-end items-center mb-6 gap-4" th:action="@{/student_manager/show}" method="get">
       <div class="relative">
-        <select class="appearance-none bg-white border border-gray-300 rounded-md px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option>Sort By ID</option>
-          <option>Sort By Name</option>
-          <option>Sort By Email</option>
+        <select name="sortField" onchange="this.form.submit()" class="appearance-none bg-white border border-gray-300 rounded-md px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500" th:value="${sortField}">
+          <option th:value="id" th:selected="${sortField == 'id'}">Sort By ID</option>
+          <option th:value="name" th:selected="${sortField == 'name'}">Sort By Name</option>
+<!--          <option th:value="email" th:selected="${sortField == 'email'}">Sort By Email</option>-->
         </select>
         <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
       </div>
+      <div class="relative">
+        <select name="sortDir" onchange="this.form.submit()" class="appearance-none bg-white border border-gray-300 rounded-md px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option th:value="asc" th:selected="${sortDir == 'asc'}">Ascending</option>
+          <option th:value="desc" th:selected="${sortDir == 'desc'}">Descending</option>
+        </select>
+      </div>
       <div class="flex items-center space-x-2">
-        <input type="text" placeholder="search by id, email or name" class="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
-        <button class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="search by id, email or name"
+               class="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+        <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
           Search
         </button>
       </div>
-    </div>
+    </form>
 
     <!-- Student Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -118,69 +117,38 @@
         </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-        <tr>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">S0001</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Alice Johnson</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">alice.johnson@gmail.com</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">male</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0345678952</td>
+
+        <tr th:each="student :${students}">
+          <td th:text="${student.id}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
+          <td th:text="${student.name}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
+          <td th:text="${student.email}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
+          <td th:text="${student.sex} ? 'Nam' : 'Nữ'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
+          <td th:text="${student.phone}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+            <span th:text="${student.status} ? 'Active' : 'Inactive'"
+                  th:class="${student.status} ? 'text-green-600 font-medium' : 'text-red-600 font-medium'"></span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <button class="bg-yellow-400 text-gray-800 px-3 py-1 rounded text-sm hover:bg-yellow-500">Lock</button>
-          </td>
-        </tr>
-        <tr>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">S0002</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Benjamin Smith</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">benjamin.smith@gmail.com</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">female</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0987546253</td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <button class="bg-yellow-400 text-gray-800 px-3 py-1 rounded text-sm hover:bg-yellow-500">Lock</button>
-          </td>
-        </tr>
-        <tr>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">S0003</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Charlotte Brown</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">charlotte.brown@gmail.com</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">male</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0325469857</td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">InActive</span>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <button class="bg-green-400 text-white px-3 py-1 rounded text-sm hover:bg-green-500">UnLock</button>
-          </td>
-        </tr>
-        <tr>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">S0004</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Daniel Williams</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">daniel.williams@gmail.com</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">female</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0357485965</td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <button class="bg-yellow-400 text-gray-800 px-3 py-1 rounded text-sm hover:bg-yellow-500">Lock</button>
-          </td>
-        </tr>
-        <tr>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">C0005</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Emma Davis</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">emma.davis@gmail.com</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">male</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0354856857</td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <button class="bg-yellow-400 text-gray-800 px-3 py-1 rounded text-sm hover:bg-yellow-500">Lock</button>
+            <form th:if="${student.status}" th:action="@{/student_manager/lock}" method="post" style="display:inline;">
+              <input type="hidden" name="id" th:value="${student.id}" />
+              <input type="hidden" name="page" th:value="${currentPage}" />
+              <input type="hidden" name="sortField" th:value="${sortField}" />
+              <input type="hidden" name="sortDir" th:value="${sortDir}" />
+              <input type="hidden" name="keyword" th:value="${keyword}" />
+              <button type="submit" class="border-2 border-orange-500 bg-orange-100 text-orange-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-orange-200 transition-colors">
+                Lock
+              </button>
+            </form>
+            <form th:unless="${student.status}" th:action="@{/student_manager/unlock}" method="post" style="display:inline;">
+              <input type="hidden" name="id" th:value="${student.id}" />
+              <input type="hidden" name="page" th:value="${currentPage}" />
+              <input type="hidden" name="sortField" th:value="${sortField}" />
+              <input type="hidden" name="sortDir" th:value="${sortDir}" />
+              <input type="hidden" name="keyword" th:value="${keyword}" />
+              <button type="submit" class="border-2 border-green-500 bg-green-100 text-green-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-green-200 transition-colors">
+                UnLock
+              </button>
+            </form>
           </td>
         </tr>
         </tbody>
@@ -188,23 +156,27 @@
     </div>
 
     <!-- Pagination -->
-    <div class="flex items-center justify-center space-x-2 mt-6">
-      <button class="p-2 text-gray-500 hover:text-gray-700">
+    <nav class="flex items-center justify-center mt-6">
+      <a th:if="${currentPage > 1}"
+         th:href="@{/student_manager/show(page=${currentPage - 1}, sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}"
+         class="p-2 text-gray-500 hover:text-gray-700">
         <i class="fas fa-chevron-left"></i>
-      </button>
-      <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">1</button>
-      <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">2</button>
-      <button class="px-3 py-2 bg-blue-500 text-white rounded">3</button>
-      <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">4</button>
-      <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">5</button>
-      <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">6</button>
-      <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">7</button>
-      <span class="px-3 py-2 text-gray-500">...</span>
-      <button class="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded">20</button>
-      <button class="p-2 text-gray-500 hover:text-gray-700">
+      </a>
+      <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+        <a th:href="@{/student_manager/show(page=${i}, sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}"
+           th:class="'px-3 py-2 rounded ' + (${i} == ${currentPage} ?
+                    'bg-blue-500 text-white' :
+                    'text-gray-700 hover:bg-gray-100')">
+            [[${i}]]
+        </a>
+      </span>
+      <a th:if="${currentPage < totalPages}"
+         th:href="@{/student_manager/show(page=${currentPage + 1}, sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}"
+         class="p-2 text-gray-500 hover:text-gray-700">
         <i class="fas fa-chevron-right"></i>
-      </button>
-    </div>
+      </a>
+    </nav>
+
   </main>
 </div>
 </body>

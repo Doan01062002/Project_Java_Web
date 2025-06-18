@@ -55,6 +55,9 @@ public class StudentDTO {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate createAt = LocalDate.now();
 
+    //  status để khoá học sinh
+    private boolean status = true;
+
     @NotNull(message = "Vai trò không được để trống")
     private Boolean role = false; // false = Student, true = Admin
 }

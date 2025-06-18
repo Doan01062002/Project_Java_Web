@@ -13,9 +13,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ra.edu.service.CourseService;
+import ra.edu.service.EnrollmentService;
+import ra.edu.service.StudentService;
+
+import java.util.List;
 
 @Controller
 public class AuthenticationController {
+
+    @Autowired
+    private CourseService courseService;
+    @Autowired
+    private StudentService studentService;
+    @Autowired
+    private EnrollmentService enrollmentService;
 
     @Autowired
     private AuthenticationService authenticationService;
@@ -71,12 +83,30 @@ public class AuthenticationController {
 
     // --- TRANG DASHBOARD CHO ADMIN (ĐÃ CẬP NHẬT) ---
     @GetMapping("/dashboard")
-    public String showDashboard(HttpSession session) {
+    public String showDashboard(HttpSession session, Model model) {
         StudentDTO loggedInUser = (StudentDTO) session.getAttribute("loggedInUser");
-
         if (loggedInUser == null || !Boolean.TRUE.equals(loggedInUser.getRole())) {
             return "redirect:/login_form";
         }
+
+        // Tổng số học viên (chỉ student, không tính admin)
+        int totalStudent = studentService.countStudents("");
+        // Tổng số khóa học
+        long totalCourse = courseService.countTotalCourses();
+        // Tổng số lượt đăng ký (được xác nhận)
+        long totalEnrollment = enrollmentService.countTotalEnrollments();
+
+        // Thống kê học viên theo từng khóa
+        List<Object[]> studentByCourse = enrollmentService.countStudentByCourse();
+
+        // Top 5 khóa học đông sinh viên nhất
+        List<Object[]> top5Courses = enrollmentService.top5CoursesByEnrollment();
+
+        model.addAttribute("totalStudent", totalStudent);
+        model.addAttribute("totalCourse", totalCourse);
+        model.addAttribute("totalEnrollment", totalEnrollment);
+        model.addAttribute("studentByCourse", studentByCourse);
+        model.addAttribute("top5Courses", top5Courses);
 
         return "home_admin";
     }

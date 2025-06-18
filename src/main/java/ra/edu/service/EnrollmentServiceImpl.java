@@ -27,4 +27,19 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public List<Integer> getRegisteredCourseIds(int studentId) {
         return enrollmentRepository.getRegisteredCourseIds(studentId);
     }
+
+    @Override
+    public long countTotalEnrollments() {
+        return enrollmentRepository.countTotalEnrollments();
+    }
+
+    @Override
+    public List<Object[]> countStudentByCourse() {
+        return enrollmentRepository.countStudentByCourse();
+    }
+
+    @Override
+    public List<Object[]> top5CoursesByEnrollment() {
+        return enrollmentRepository.top5CoursesByEnrollment();
+    }
 }
