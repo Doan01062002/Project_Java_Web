@@ -100,7 +100,7 @@
                     <span>Courses</span>
                 </a>
 
-                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
+                <a th:href="@{/admin/enrollments/list}" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
                     <i class="fas fa-user-plus mr-3 text-gray-500"></i>
                     <span>Enrollment</span>
                 </a>
@@ -110,6 +110,12 @@
 
     <!-- Main Content -->
     <main class="flex-1 p-6">
+        <div th:if="${error}" class="mb-4 px-4 py-2 bg-red-100 text-red-700 rounded">
+            <span th:text="${error}"></span>
+        </div>
+        <div th:if="${success}" class="mb-4 px-4 py-2 bg-green-100 text-green-700 rounded">
+            <span th:text="${success}"></span>
+        </div>
         <!-- Page Header -->
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-gray-900">Course Manager</h1>
@@ -341,10 +347,11 @@
             </a>
 
             <!-- Nút Ok -->
-            <a th:href="@{/course_manager/delete_course/{id}(id=${confirmCourse.id})}"
-               class="bg-red-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
-                Ok
-            </a>
+            <form th:action="@{/course_manager/delete_course/{id}(id=${confirmCourse.id})}" method="post" style="display:inline;">
+                <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+                    Ok
+                </button>
+            </form>
         </div>
     </div>
 </div>

@@ -32,11 +32,17 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
+        .course-image {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
 <!-- Header -->
-
 <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
     <div class="flex items-center justify-between">
         <div class="flex items-center">
@@ -72,7 +78,6 @@
         </div>
     </div>
 </header>
-
 <div class="flex">
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-sm h-screen">
@@ -90,7 +95,7 @@
                     <i class="fas fa-book mr-3 text-gray-500"></i>
                     <span>Courses</span>
                 </a>
-                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
+                <a th:href="@{/admin/enrollments/list}" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
                     <i class="fas fa-user-plus mr-3 text-gray-500"></i>
                     <span>Enrollment</span>
                 </a>
@@ -156,10 +161,12 @@
                         <tr th:each="row : ${studentByCourse}">
                             <td class="px-6 py-4 text-sm text-gray-900" th:text="'C' + ${row[0].id}">C0001</td>
                             <td class="px-6 py-4">
-                                <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
+                                <img th:if="${row[0].image != null}" th:src="${row[0].image}" alt="Course Image" class="course-image"/>
+                                <div th:unless="${row[0].image != null}" class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
                                     <span class="text-white text-xs font-bold" th:text="${#strings.substring(row[0].name, 0, 1)}">H</span>
                                 </div>
                             </td>
+
                             <td class="px-6 py-4 text-sm text-gray-900" th:text="${row[0].name}">Course Name</td>
                             <td class="px-6 py-4 text-sm text-gray-600" th:text="${row[0].duration}">Duration</td>
                             <td class="px-6 py-4 text-sm text-gray-900" th:text="${row[1]}">Total Student</td>
@@ -176,9 +183,7 @@
                 <div class="p-6 space-y-4">
                     <div th:each="row : ${top5Courses}" class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
-                                <span class="text-white text-xs font-bold" th:text="${#strings.substring(row[0].name, 0, 1)}"></span>
-                            </div>
+                            <img th:if="${row[0].image != null}" th:src="${row[0].image}" alt="Course Image" class="course-image"/>
                             <div>
                                 <p class="text-sm font-medium text-gray-900" th:text="${row[0].name}"></p>
                                 <p class="text-xs text-gray-500">Student</p>

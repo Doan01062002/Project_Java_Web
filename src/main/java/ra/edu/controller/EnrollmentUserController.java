@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ra.edu.dto.StudentDTO;
 import ra.edu.service.EnrollmentUserService;
 
@@ -49,4 +51,18 @@ public class EnrollmentUserController {
         return "list_enrollment";
     }
 
+    @PostMapping("/cancel")
+    public String cancelEnrollment(@RequestParam("enrollmentId") int enrollmentId, HttpSession session, RedirectAttributes redirectAttributes) {
+        StudentDTO user = (StudentDTO) session.getAttribute("loggedInUser");
+        if (user == null || Boolean.TRUE.equals(user.getRole())) {
+            return "redirect:/login_form";
+        }
+        boolean result = enrollmentUserService.cancelEnrollment(enrollmentId, user.getId());
+        if(result) {
+            redirectAttributes.addFlashAttribute("successMessage", "Đã huỷ đăng ký thành công.");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể huỷ đăng ký này.");
+        }
+        return "redirect:/enrollments/list";
+    }
 }

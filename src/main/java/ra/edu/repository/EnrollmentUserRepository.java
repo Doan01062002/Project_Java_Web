@@ -17,4 +17,6 @@ public interface EnrollmentUserRepository {
 
     long countSearchEnrollments(Integer studentId, String keyword,
                                 Enrollment.Status status);
+
+    boolean updateStatusIfWaiting(int enrollmentId, int studentId, Enrollment.Status status);
 }

@@ -81,6 +81,11 @@
                         <span th:text="${messageError}"></span>
                     </div>
 
+                    <!--    hiển thị thông báo khoá tài khoản              -->
+                    <div th:if="${messageErorrLock}" class="text-red-500 text-sm text-center">
+                        <span th:text="${messageErorrLock}"></span>
+                    </div>
+
                     <!-- Login link -->
                     <div class="text-center text-sm">
                         <span class="text-gray-400">Bạn chưa có tài khoản ? Hãy đăng ký ngay</span>

@@ -33,7 +33,7 @@ public class StudentDTO {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate dob;
 
-    @NotBlank(message = "Email không được để trống")
+//    @NotBlank(message = "Email không được để trống")
     @Email(regexp = "^[\\w.-]+@[\\w.-]+\\.\\w{2,}$",message = "Email không đúng định dạng")
 //    @Size(max = 100, message = "Email tối đa 100 ký tự")
     @CheckExistEmail
@@ -42,13 +42,13 @@ public class StudentDTO {
     @NotNull(message = "Giới tính không được để trống")
     private Boolean sex; // true = Nam, false = Nữ
 
-    @NotBlank(message = "Số điện thoại không được để trống ")
+//    @NotBlank(message = "Số điện thoại không được để trống ")
     @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
     @CheckExistPhone
     private String phone;
 
 
-    @NotBlank(message = "Mật khẩu không được để trống")
+//    @NotBlank(message = "Mật khẩu không được để trống")
     @Size(min = 6, max = 40, message = "Mật khẩu phải từ 6 đến 40 ký tự")
     private String password;
 

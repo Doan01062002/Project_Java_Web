@@ -75,5 +75,57 @@ public class StudentRepositoryImpl implements StudentRepository {
         }
     }
 
+    @Override
+    public void update(Student student) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.update(student);
+            session.getTransaction().commit();
+        }
+    }
 
+    @Override
+    public void changePassword(int id, String newPassword) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            Student student = session.get(Student.class, id);
+            if (student != null) {
+                student.setPassword(newPassword);
+                session.update(student);
+            }
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public boolean checkPassword(int id, String password) {
+        try (Session session = sessionFactory.openSession()) {
+            Student student = session.get(Student.class, id);
+            return student != null && student.getPassword().equals(password);
+        }
+    }
+
+    @Override
+    public boolean existsByEmailExceptId(String email, int exceptId) {
+        try (Session session = sessionFactory.openSession()) {
+            String hql = "SELECT COUNT(s.id) FROM Student s WHERE lower(s.email) = :email AND s.id <> :id";
+            Long count = session.createQuery(hql, Long.class)
+                    .setParameter("email", email.toLowerCase())
+                    .setParameter("id", exceptId)
+                    .uniqueResult();
+            return count != null && count > 0;
+        }
+    }
+
+    @Override
+    public boolean existsByPhoneExceptId(String phone, int exceptId) {
+        try (Session session = sessionFactory.openSession()) {
+            String hql = "SELECT COUNT(s.id) FROM Student s WHERE s.phone = :phone AND s.id <> :id";
+            Long count = session.createQuery(hql, Long.class)
+                    .setParameter("phone", phone)
+                    .setParameter("id", exceptId)
+                    .uniqueResult();
+            return count != null && count > 0;
+        }
+    }
 }

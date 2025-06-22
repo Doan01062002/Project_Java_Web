@@ -9,4 +9,12 @@ public interface StudentService {
     int countStudents(String keyword);
     void lockOrUnlockStudent(int id, boolean status);
     Student getStudentById(int id);
+
+    void updateStudent(Student student);
+    void changePassword(int id, String newPassword);
+
+    boolean checkPassword(int studentId, String password);
+
+    boolean isEmailDuplicate(String email, int exceptId);
+    boolean isPhoneDuplicate(String phone, int exceptId);
 }

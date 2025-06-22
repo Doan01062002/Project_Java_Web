@@ -18,4 +18,6 @@ public interface EnrollmentUserService {
     long countSearchEnrollments(Integer studentId,
                                 String keyword,
                                 String status);
+
+    boolean cancelEnrollment(int enrollmentId, int studentId);
 }

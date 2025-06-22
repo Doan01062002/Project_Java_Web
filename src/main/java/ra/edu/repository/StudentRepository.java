@@ -9,4 +9,12 @@ public interface StudentRepository {
     int count(String keyword);
     Student findById(int id);
     void updateStatus(int id, boolean status);
+
+    void update(Student student);
+    void changePassword(int id, String newPassword);
+
+    boolean checkPassword(int id, String password);
+
+    boolean existsByEmailExceptId(String email, int exceptId);
+    boolean existsByPhoneExceptId(String phone, int exceptId);
 }

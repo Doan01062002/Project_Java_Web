@@ -19,7 +19,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/courses")
-public class EnrollmentController {
+public class CourseUserController {
 
     @Autowired
     private CourseService courseService;
@@ -43,10 +43,14 @@ public class EnrollmentController {
 
         StudentDTO loggedInUser = (StudentDTO) session.getAttribute("loggedInUser");
         List<Integer> registeredCourseIds = null;
+        boolean isAdmin = false;
         if (loggedInUser != null) {
             registeredCourseIds = enrollmentService.getRegisteredCourseIds(loggedInUser.getId());
         }
-
+        if (loggedInUser != null && "true".equalsIgnoreCase(loggedInUser.getRole().toString())) {
+            isAdmin = true;
+        }
+        model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("listCourse", courses);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
@@ -59,6 +63,17 @@ public class EnrollmentController {
             model.addAttribute("showConfirmModal", true);
             model.addAttribute("confirmCourse", course);
         }
+
+        // Đề xuất khóa học cùng giáo viên đã đăng ký (nếu đã đăng nhập)
+        List<Course> suggestedByInstructor = null;
+        if (loggedInUser != null) {
+            suggestedByInstructor = enrollmentService.suggestCoursesByInstructor(loggedInUser.getId());
+        }
+        model.addAttribute("suggestedByInstructor", suggestedByInstructor);
+
+        // Đề xuất top khóa học nổi bật (nhiều người đăng ký nhất)
+        List<Course> topCourses = enrollmentService.suggestTopCourses(5);
+        model.addAttribute("topCourses", topCourses);
 
         return "list_course";
     }

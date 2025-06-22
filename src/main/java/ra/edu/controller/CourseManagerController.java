@@ -11,10 +11,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ra.edu.dto.CourseDTO;
 import ra.edu.dto.StudentDTO;
 import ra.edu.entity.Course;
 import ra.edu.service.CourseService;
+import ra.edu.service.EnrollmentService;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,6 +36,9 @@ public class CourseManagerController {
 
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private EnrollmentService enrollmentService;
 
     @GetMapping("/show")
     public String showCourseManager(
@@ -194,9 +199,14 @@ public class CourseManagerController {
         return "redirect:/course_manager/show";
     }
 
-    @GetMapping("/delete_course/{id}")
-    public String deleteCourse(@PathVariable("id") int id) {
+    @PostMapping("/delete_course/{id}")
+    public String deleteCourse(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
+        if (!enrollmentService.canDeleteCourse(id)) {
+            redirectAttributes.addFlashAttribute("error", "Không thể xóa khóa học vì đã có học sinh đăng ký ở trạng thái WAITING, DENIED hoặc CONFIRM.");
+            return "redirect:/course_manager/show";
+        }
         courseService.deleteCourse(courseService.getCourseById(id));
+        redirectAttributes.addFlashAttribute("success", "Xóa khóa học thành công!");
         return "redirect:/course_manager/show";
     }
 }

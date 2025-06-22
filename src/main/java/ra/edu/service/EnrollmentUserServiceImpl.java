@@ -52,4 +52,9 @@ public class EnrollmentUserServiceImpl implements EnrollmentUserService {
             return null; // nếu không match, coi như không lọc
         }
     }
+
+    @Override
+    public boolean cancelEnrollment(int enrollmentId, int studentId) {
+        return enrollmentUserRepository.updateStatusIfWaiting(enrollmentId, studentId, Enrollment.Status.CANCEL);
+    }
 }

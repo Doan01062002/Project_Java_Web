@@ -44,7 +44,6 @@
   </div>
 </header>
 
-
 <div class="flex">
   <!-- Sidebar -->
   <aside class="w-64 bg-white shadow-sm h-screen">
@@ -62,15 +61,13 @@
           <i class="fas fa-book mr-3 text-gray-500"></i>
           <span>Courses</span>
         </a>
-        <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
+        <a th:href="@{/admin/enrollments/list}" class="sidebar-item flex items-center px-6 py-3 text-gray-700 transition-colors">
           <i class="fas fa-user-plus mr-3 text-gray-500"></i>
           <span>Enrollment</span>
         </a>
       </div>
     </nav>
   </aside>
-
-
   <!-- Main Content -->
   <main class="flex-1 p-8">
     <div class="mb-8">
@@ -176,7 +173,6 @@
         <i class="fas fa-chevron-right"></i>
       </a>
     </nav>
-
   </main>
 </div>
 </body>

@@ -115,4 +115,17 @@ public class EnrollmentUserRepositoryImpl implements EnrollmentUserRepository {
 
         return query.uniqueResult();
     }
+
+    @Override
+    public boolean updateStatusIfWaiting(int enrollmentId, int studentId, Enrollment.Status status) {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "update Enrollment e set e.status = :st where e.id = :eid and e.student.id = :sid and e.status = :waiting";
+        int updated = session.createQuery(hql)
+                .setParameter("st", status)
+                .setParameter("eid", enrollmentId)
+                .setParameter("sid", studentId)
+                .setParameter("waiting", Enrollment.Status.WAITING)
+                .executeUpdate();
+        return updated > 0;
+    }
 }
